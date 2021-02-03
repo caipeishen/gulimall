@@ -12,3 +12,6 @@ mybatis-plus:
       id-type: auto # \u4E3B\u952E\u81EA\u589E
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #\u5F00\u542Fsql\u65E5\u5FD7
+
+server:
+  port: 11000
