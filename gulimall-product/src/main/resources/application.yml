@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://192.168.181.130:3306/gulimall_pms
+    driver-class-name: com.mysql.jdbc.Driver
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: auto # \u4E3B\u952E\u81EA\u589E
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #\u5F00\u542Fsql\u65E5\u5FD7
