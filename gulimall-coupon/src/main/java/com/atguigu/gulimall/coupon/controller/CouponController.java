@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
 import com.atguigu.gulimall.coupon.entity.CouponEntity;
@@ -21,6 +22,7 @@ import com.atguigu.common.utils.R;
  * @email peishen.cai@foxmail.com
  * @date 2021-02-03 10:39:16
  */
+@RefreshScope // 动态获取刷新nacos配置
 @RestController
 @RequestMapping("coupon/coupon")
 public class CouponController {
