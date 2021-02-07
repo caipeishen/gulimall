@@ -15,9 +15,13 @@ mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
   global-config:
     db-config:
-      id-type: auto # \u4E3B\u952E\u81EA\u589E
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #\u5F00\u542Fsql\u65E5\u5FD7
+      id-type: auto # 主键自增
+      logic-delete-value: 1
+      logic-not-delete-value: 0
 
 server:
   port: 10000
+
+logging:
+  level:
+    com.atguigu.gulimall: debug
