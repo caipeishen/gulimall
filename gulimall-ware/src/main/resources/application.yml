@@ -4,7 +4,7 @@ spring:
   datasource:
     username: root
     password: root
-    url: jdbc:mysql://192.168.181.130:3306/gulimall_wms
+    url: jdbc:mysql://192.168.181.130:3306/gulimall_wms?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.jdbc.Driver
   cloud:
     nacos:
