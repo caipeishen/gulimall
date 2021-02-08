@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: gulimall-third-party
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.181.130:8848
+    alicloud:
+      access-key: xxx # 使用nacos配置(会覆盖当前配置)
+      secret-key: xxx # 使用nacos配置(会覆盖当前配置)
+      oss:
+        endpoint: oss-cn-shanghai.aliyuncs.com
+        bucket: gulimall-ferris
+
+server:
+  port: 30000
