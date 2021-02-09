@@ -12,7 +12,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  *              </dependency>
  *      2.创建一个bootstrap.properties。
  *           spring.application.name=gulimall-coupon
- *           spring.cloud.nacos.config.server-addr=127.0.0.1:8848
+ *           spring.cloud.nacos.config.server-addr=192.168.181.130:8848
  *      3.需要给配置中心默认添加一个叫 数据集（Data Id）gulimall-coupon.properties。默认规则，应用名.properties
  *      4.给应用名.properties 添加任何配置
  *      5.动态获取配置。

@@ -1,6 +1,5 @@
 package com.atguigu.gulimall.product;
 
-import com.aliyun.oss.OSSClient;
 import com.atguigu.gulimall.product.entity.BrandEntity;
 import com.atguigu.gulimall.product.service.BrandService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -15,9 +14,6 @@ class GulimallProductApplicationTests {
     
     @Autowired
     private BrandService brandService;
-    
-    @Autowired
-    private OSSClient ossClient;
     
     @Test
     void contextLoads() {
