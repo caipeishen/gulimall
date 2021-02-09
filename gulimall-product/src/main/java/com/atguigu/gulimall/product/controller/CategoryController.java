@@ -85,4 +85,16 @@ public class CategoryController {
         return R.ok();
     }
 
+    /**
+     * 修改父子关系以及顺序
+     * @param category
+     * @return
+     */
+    @RequestMapping("/update/sort")
+    //@RequiresPermissions("product:category:update")
+    public R updateSort(@RequestBody CategoryEntity[] category){
+        categoryService.updateBatchById(Arrays.asList(category));
+        return R.ok();
+    }
+
 }
