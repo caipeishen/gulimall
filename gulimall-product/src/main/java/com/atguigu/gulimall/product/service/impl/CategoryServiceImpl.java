@@ -1,5 +1,7 @@
 package com.atguigu.gulimall.product.service.impl;
 
+import com.atguigu.gulimall.product.service.CategoryBrandRelationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,6 +23,9 @@ import com.atguigu.gulimall.product.service.CategoryService;
 
 @Service("categoryService")
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity> implements CategoryService {
+
+    @Autowired
+    private CategoryBrandRelationService categoryBrandRelationService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -69,6 +74,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
 
         return parentPath.toArray(new Long[parentPath.size()]);
+    }
+
+    @Override
+    public void updateCascade(CategoryEntity category) {
+        this.updateById(category);
+        categoryBrandRelationService.updateCategory(category.getCatId(),category.getName());
     }
 
     /**
