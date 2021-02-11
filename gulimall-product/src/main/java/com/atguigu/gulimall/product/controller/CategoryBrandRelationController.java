@@ -9,6 +9,7 @@ import com.atguigu.gulimall.product.entity.BrandEntity;
 import com.atguigu.gulimall.product.vo.BrandVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import com.atguigu.gulimall.product.entity.CategoryBrandRelationEntity;
@@ -111,17 +112,16 @@ public class CategoryBrandRelationController {
     @GetMapping("/brands/list")
     public R relationBrandsList(@RequestParam(value = "catId",required = true)Long catId){
         List<BrandEntity> vos = categoryBrandRelationService.getBrandsByCatId(catId);
-
-        List<BrandVo> collect = vos.stream().map(item -> {
-            BrandVo brandVo = new BrandVo();
-            brandVo.setBrandId(item.getBrandId());
-            brandVo.setBrandName(item.getName());
-
-            return brandVo;
-        }).collect(Collectors.toList());
-
+        List<BrandVo> collect = null;
+        if(!CollectionUtils.isEmpty(vos)) {
+            collect = vos.stream().map(item -> {
+                BrandVo brandVo = new BrandVo();
+                brandVo.setBrandId(item.getBrandId());
+                brandVo.setBrandName(item.getName());
+                return brandVo;
+            }).collect(Collectors.toList());
+        }
         return R.ok().put("data",collect);
-
     }
 
 }
