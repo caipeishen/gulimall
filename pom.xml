@@ -20,6 +20,7 @@
         <module>gulimall-product</module>
         <module>gulimall-ware</module>
         <module>gulimall-third-party</module>
+        <module>gulimall-elastic-search</module>
         <module>renren-fast</module>
         <module>renren-generator</module>
     </modules>

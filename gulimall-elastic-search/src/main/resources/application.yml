@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: gulimall-elastic-search
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.181.130:8848
+
+server:
+  port: 12000
