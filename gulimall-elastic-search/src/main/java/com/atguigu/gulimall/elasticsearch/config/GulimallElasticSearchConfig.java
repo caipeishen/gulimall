@@ -1,6 +1,7 @@
 package com.atguigu.gulimall.elasticsearch.config;
 
 import org.apache.http.HttpHost;
+import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,16 @@ import org.springframework.context.annotation.Configuration;
  **/
 @Configuration
 public class GulimallElasticSearchConfig {
+
+    public static final RequestOptions COMNON_OPTIONS;
+    static {
+        RequestOptions.Builder builder = RequestOptions.DEFAULT.toBuilder();
+//            builder.addHeader("Authorization", "Bearer" + TOKEN);
+//            builder.setHttpAsyncResponseConsumerFactory(
+//                    new HttpAsyncResponseConsumerFactory
+//                        .HeapBufferedResponseConsumerFactory(30*1024*1024*1024));
+        COMNON_OPTIONS = builder.build();
+    }
 
     @Bean
     public RestHighLevelClient esRestclient() {
