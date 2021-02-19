@@ -55,7 +55,7 @@ class GulimallElasticSearchApplicationTests {
         searchRequest.source(sourceBuilder);
 
         // 3.执行检索，返回检索数据
-        SearchResponse searchResponse = client.search(searchRequest, GulimallElasticSearchConfig.COMNON_OPTIONS);// RequestOptions.DEFAULT
+        SearchResponse searchResponse = client.search(searchRequest, GulimallElasticSearchConfig.COMMON_OPTIONS);// RequestOptions.DEFAULT
 
         // 4.分析结果
         SearchHits hits = searchResponse.getHits();
@@ -93,7 +93,7 @@ class GulimallElasticSearchApplicationTests {
         String jsonString = JSON.toJSONString(user);
         indexRequest.source(jsonString, XContentType.JSON);
 
-        IndexResponse indexResponse = client.index(indexRequest, GulimallElasticSearchConfig.COMNON_OPTIONS);
+        IndexResponse indexResponse = client.index(indexRequest, GulimallElasticSearchConfig.COMMON_OPTIONS);
         System.out.println(indexResponse.toString());
     }
 
