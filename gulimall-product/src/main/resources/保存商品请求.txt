@@ -1,0 +1,440 @@
+{
+	"spuName": "华为 HUAWEI Mate 30E Pro",
+	"spuDescription": "华为 HUAWEI Mate 30E Pro",
+	"catalogId": 225,
+	"brandId": 2,
+	"weight": 0,
+	"publishStatus": 0,
+	"decript": ["https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/74c17289-d766-4132-8ce4-8a451e66e9a4_73366cc235d68202.jpg", "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/1561211c-6474-407b-8bba-c5b9fefc9505_b094601548ddcb1b.jpg", "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/0bda4548-2fea-4cd9-8ca1-6de26ca444c9_528211b97272d88a.jpg"],
+	"images": ["https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/f88cd404-a2c8-48ff-83ff-59f2b4edc956_0d40c24b264aa511.jpg", "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/284bca1a-ecdf-47aa-8edb-6286865030f4_1f15cdbcf9e1273c.jpg", "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/ff393d8f-f75b-47cd-8b45-efe53ae03027_8bf441260bffa42f.jpg", "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/a1afe5f4-2362-4122-8e39-e3524d0a49c4_d511faab82abb34b.jpg", "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/978ab5f2-42fb-469b-8667-ace3e2b18c98_a83bf5250e14caf2.jpg", "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/0ff29cd4-1d06-4abd-8143-b9a7ad186562_10f955d3cc569f3f.jpg"],
+	"bounds": {
+		"buyBounds": 0,
+		"growBounds": 0
+	},
+	"baseAttrs": [{
+		"attrId": 2,
+		"attrValues": "2020",
+		"showDesc": 0
+	}, {
+		"attrId": 5,
+		"attrValues": "6月",
+		"showDesc": 0
+	}, {
+		"attrId": 7,
+		"attrValues": "LIO-AN00m",
+		"showDesc": 0
+	}, {
+		"attrId": 6,
+		"attrValues": "158.1mm",
+		"showDesc": 0
+	}, {
+		"attrId": 8,
+		"attrValues": "73.1mm",
+		"showDesc": 0
+	}, {
+		"attrId": 10,
+		"attrValues": "OLED;LED",
+		"showDesc": 0
+	}, {
+		"attrId": 11,
+		"attrValues": "4G FDD-LTE(联通)；;4G TD-LTE(移动)；;4G FDD-LTE(联通、电信)",
+		"showDesc": 0
+	}, {
+		"attrId": 12,
+		"attrValues": "移动5G;联通5G;电信5G",
+		"showDesc": 0
+	}],
+	"skus": [{
+		"attr": [{
+			"attrId": 3,
+			"attrName": "内存",
+			"attrValue": "8GB+128G"
+		}, {
+			"attrId": 13,
+			"attrName": "机身颜色",
+			"attrValue": "亮黑色"
+		}],
+		"skuName": "华为 HUAWEI Mate 30E Pro 8GB+128G 亮黑色",
+		"price": "5299",
+		"skuTitle": "华为 HUAWEI Mate 30E Pro 8GB+128G 亮黑色",
+		"skuSubtitle": "【nova8系列新品上市】麒麟985芯片，稀缺货源限量抢购！猛戳》》》华为手机热销爆款，限量抢购",
+		"images": [{
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/f88cd404-a2c8-48ff-83ff-59f2b4edc956_0d40c24b264aa511.jpg",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/284bca1a-ecdf-47aa-8edb-6286865030f4_1f15cdbcf9e1273c.jpg",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/ff393d8f-f75b-47cd-8b45-efe53ae03027_8bf441260bffa42f.jpg",
+			"defaultImg": 1
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}],
+		"descar": ["8GB+128G", "亮黑色"],
+		"fullCount": 2,
+		"discount": 0.95,
+		"countStatus": 1,
+		"fullPrice": 10000,
+		"reducePrice": 100,
+		"priceStatus": 1,
+		"memberPrice": [{
+			"id": 2,
+			"name": "铜牌会员",
+			"price": 5199
+		}, {
+			"id": 3,
+			"name": "银牌会员",
+			"price": 5099
+		}]
+	}, {
+		"attr": [{
+			"attrId": 3,
+			"attrName": "内存",
+			"attrValue": "8GB+128G"
+		}, {
+			"attrId": 13,
+			"attrName": "机身颜色",
+			"attrValue": "星河银"
+		}],
+		"skuName": "华为 HUAWEI Mate 30E Pro 8GB+128G 星河银",
+		"price": "5299",
+		"skuTitle": "华为 HUAWEI Mate 30E Pro 8GB+128G 星河银",
+		"skuSubtitle": "【nova8系列新品上市】麒麟985芯片，稀缺货源限量抢购！猛戳》》》华为手机热销爆款，限量抢购",
+		"images": [{
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/f88cd404-a2c8-48ff-83ff-59f2b4edc956_0d40c24b264aa511.jpg",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/284bca1a-ecdf-47aa-8edb-6286865030f4_1f15cdbcf9e1273c.jpg",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/a1afe5f4-2362-4122-8e39-e3524d0a49c4_d511faab82abb34b.jpg",
+			"defaultImg": 1
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}],
+		"descar": ["8GB+128G", "星河银"],
+		"fullCount": 2,
+		"discount": 0.95,
+		"countStatus": 1,
+		"fullPrice": 10000,
+		"reducePrice": 100,
+		"priceStatus": 1,
+		"memberPrice": [{
+			"id": 2,
+			"name": "铜牌会员",
+			"price": 5199
+		}, {
+			"id": 3,
+			"name": "银牌会员",
+			"price": 5099
+		}]
+	}, {
+		"attr": [{
+			"attrId": 3,
+			"attrName": "内存",
+			"attrValue": "8GB+128G"
+		}, {
+			"attrId": 13,
+			"attrName": "机身颜色",
+			"attrValue": "翡翠绿"
+		}],
+		"skuName": "华为 HUAWEI Mate 30E Pro 8GB+128G 翡翠绿",
+		"price": "5299",
+		"skuTitle": "华为 HUAWEI Mate 30E Pro 8GB+128G 翡翠绿",
+		"skuSubtitle": "【nova8系列新品上市】麒麟985芯片，稀缺货源限量抢购！猛戳》》》华为手机热销爆款，限量抢购",
+		"images": [{
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/f88cd404-a2c8-48ff-83ff-59f2b4edc956_0d40c24b264aa511.jpg",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/284bca1a-ecdf-47aa-8edb-6286865030f4_1f15cdbcf9e1273c.jpg",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/978ab5f2-42fb-469b-8667-ace3e2b18c98_a83bf5250e14caf2.jpg",
+			"defaultImg": 1
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}],
+		"descar": ["8GB+128G", "翡翠绿"],
+		"fullCount": 2,
+		"discount": 0.95,
+		"countStatus": 1,
+		"fullPrice": 10000,
+		"reducePrice": 100,
+		"priceStatus": 1,
+		"memberPrice": [{
+			"id": 2,
+			"name": "铜牌会员",
+			"price": 5199
+		}, {
+			"id": 3,
+			"name": "银牌会员",
+			"price": 5099
+		}]
+	}, {
+		"attr": [{
+			"attrId": 3,
+			"attrName": "内存",
+			"attrValue": "8GB+128G"
+		}, {
+			"attrId": 13,
+			"attrName": "机身颜色",
+			"attrValue": "罗兰紫色"
+		}],
+		"skuName": "华为 HUAWEI Mate 30E Pro 8GB+128G 罗兰紫色",
+		"price": "5299",
+		"skuTitle": "华为 HUAWEI Mate 30E Pro 8GB+128G 罗兰紫色",
+		"skuSubtitle": "【nova8系列新品上市】麒麟985芯片，稀缺货源限量抢购！猛戳》》》华为手机热销爆款，限量抢购",
+		"images": [{
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/f88cd404-a2c8-48ff-83ff-59f2b4edc956_0d40c24b264aa511.jpg",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/284bca1a-ecdf-47aa-8edb-6286865030f4_1f15cdbcf9e1273c.jpg",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/0ff29cd4-1d06-4abd-8143-b9a7ad186562_10f955d3cc569f3f.jpg",
+			"defaultImg": 1
+		}],
+		"descar": ["8GB+128G", "罗兰紫色"],
+		"fullCount": 2,
+		"discount": 0.95,
+		"countStatus": 1,
+		"fullPrice": 10000,
+		"reducePrice": 100,
+		"priceStatus": 1,
+		"memberPrice": [{
+			"id": 2,
+			"name": "铜牌会员",
+			"price": 5199
+		}, {
+			"id": 3,
+			"name": "银牌会员",
+			"price": 5099
+		}]
+	}, {
+		"attr": [{
+			"attrId": 3,
+			"attrName": "内存",
+			"attrValue": "8G+256G"
+		}, {
+			"attrId": 13,
+			"attrName": "机身颜色",
+			"attrValue": "亮黑色"
+		}],
+		"skuName": "华为 HUAWEI Mate 30E Pro 8G+256G 亮黑色",
+		"price": "5799",
+		"skuTitle": "华为 HUAWEI Mate 30E Pro 8G+256G 亮黑色",
+		"skuSubtitle": "【nova8系列新品上市】麒麟985芯片，稀缺货源限量抢购！猛戳》》》华为手机热销爆款，限量抢购",
+		"images": [{
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/f88cd404-a2c8-48ff-83ff-59f2b4edc956_0d40c24b264aa511.jpg",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/284bca1a-ecdf-47aa-8edb-6286865030f4_1f15cdbcf9e1273c.jpg",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/ff393d8f-f75b-47cd-8b45-efe53ae03027_8bf441260bffa42f.jpg",
+			"defaultImg": 1
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}],
+		"descar": ["8G+256G", "亮黑色"],
+		"fullCount": 2,
+		"discount": 0.95,
+		"countStatus": 1,
+		"fullPrice": 10000,
+		"reducePrice": 100,
+		"priceStatus": 1,
+		"memberPrice": [{
+			"id": 2,
+			"name": "铜牌会员",
+			"price": 5699
+		}, {
+			"id": 3,
+			"name": "银牌会员",
+			"price": 5599
+		}]
+	}, {
+		"attr": [{
+			"attrId": 3,
+			"attrName": "内存",
+			"attrValue": "8G+256G"
+		}, {
+			"attrId": 13,
+			"attrName": "机身颜色",
+			"attrValue": "星河银"
+		}],
+		"skuName": "华为 HUAWEI Mate 30E Pro 8G+256G 星河银",
+		"price": "5799",
+		"skuTitle": "华为 HUAWEI Mate 30E Pro 8G+256G 星河银",
+		"skuSubtitle": "【nova8系列新品上市】麒麟985芯片，稀缺货源限量抢购！猛戳》》》华为手机热销爆款，限量抢购",
+		"images": [{
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/f88cd404-a2c8-48ff-83ff-59f2b4edc956_0d40c24b264aa511.jpg",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/284bca1a-ecdf-47aa-8edb-6286865030f4_1f15cdbcf9e1273c.jpg",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/a1afe5f4-2362-4122-8e39-e3524d0a49c4_d511faab82abb34b.jpg",
+			"defaultImg": 1
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}],
+		"descar": ["8G+256G", "星河银"],
+		"fullCount": 2,
+		"discount": 0.95,
+		"countStatus": 1,
+		"fullPrice": 10000,
+		"reducePrice": 100,
+		"priceStatus": 1,
+		"memberPrice": [{
+			"id": 2,
+			"name": "铜牌会员",
+			"price": 5699
+		}, {
+			"id": 3,
+			"name": "银牌会员",
+			"price": 5599
+		}]
+	}, {
+		"attr": [{
+			"attrId": 3,
+			"attrName": "内存",
+			"attrValue": "8G+256G"
+		}, {
+			"attrId": 13,
+			"attrName": "机身颜色",
+			"attrValue": "翡翠绿"
+		}],
+		"skuName": "华为 HUAWEI Mate 30E Pro 8G+256G 翡翠绿",
+		"price": "5799",
+		"skuTitle": "华为 HUAWEI Mate 30E Pro 8G+256G 翡翠绿",
+		"skuSubtitle": "【nova8系列新品上市】麒麟985芯片，稀缺货源限量抢购！猛戳》》》华为手机热销爆款，限量抢购",
+		"images": [{
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/f88cd404-a2c8-48ff-83ff-59f2b4edc956_0d40c24b264aa511.jpg",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/284bca1a-ecdf-47aa-8edb-6286865030f4_1f15cdbcf9e1273c.jpg",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/978ab5f2-42fb-469b-8667-ace3e2b18c98_a83bf5250e14caf2.jpg",
+			"defaultImg": 1
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}],
+		"descar": ["8G+256G", "翡翠绿"],
+		"fullCount": 2,
+		"discount": 0.95,
+		"countStatus": 1,
+		"fullPrice": 10000,
+		"reducePrice": 100,
+		"priceStatus": 1,
+		"memberPrice": [{
+			"id": 2,
+			"name": "铜牌会员",
+			"price": 5699
+		}, {
+			"id": 3,
+			"name": "银牌会员",
+			"price": 5599
+		}]
+	}, {
+		"attr": [{
+			"attrId": 3,
+			"attrName": "内存",
+			"attrValue": "8G+256G"
+		}, {
+			"attrId": 13,
+			"attrName": "机身颜色",
+			"attrValue": "罗兰紫色"
+		}],
+		"skuName": "华为 HUAWEI Mate 30E Pro 8G+256G 罗兰紫色",
+		"price": "5799",
+		"skuTitle": "华为 HUAWEI Mate 30E Pro 8G+256G 罗兰紫色",
+		"skuSubtitle": "【nova8系列新品上市】麒麟985芯片，稀缺货源限量抢购！猛戳》》》华为手机热销爆款，限量抢购",
+		"images": [{
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/f88cd404-a2c8-48ff-83ff-59f2b4edc956_0d40c24b264aa511.jpg",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/284bca1a-ecdf-47aa-8edb-6286865030f4_1f15cdbcf9e1273c.jpg",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "",
+			"defaultImg": 0
+		}, {
+			"imgUrl": "https://gulimall-ferris.oss-cn-shanghai.aliyuncs.com/2021-02-11/0ff29cd4-1d06-4abd-8143-b9a7ad186562_10f955d3cc569f3f.jpg",
+			"defaultImg": 0
+		}],
+		"descar": ["8G+256G", "罗兰紫色"],
+		"fullCount": 2,
+		"discount": 0.95,
+		"countStatus": 1,
+		"fullPrice": 10000,
+		"reducePrice": 100,
+		"priceStatus": 1,
+		"memberPrice": [{
+			"id": 2,
+			"name": "铜牌会员",
+			"price": 5699
+		}, {
+			"id": 3,
+			"name": "银牌会员",
+			"price": 5599
+		}]
+	}]
+}
