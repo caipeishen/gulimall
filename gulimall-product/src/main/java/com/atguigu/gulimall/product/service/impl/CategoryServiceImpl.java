@@ -1,9 +1,13 @@
 package com.atguigu.gulimall.product.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.atguigu.gulimall.product.service.CategoryBrandRelationService;
 import com.atguigu.gulimall.product.vo.Catalog3Vo;
 import com.atguigu.gulimall.product.vo.Catelog2Vo;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,6 +32,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Autowired
     private CategoryBrandRelationService categoryBrandRelationService;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -91,29 +98,38 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Override
     public Map<String, List<Catelog2Vo>> getCatelogJson() {
-        List<CategoryEntity> entityList = baseMapper.selectList(null);
-        // 查询所有一级分类
-        List<CategoryEntity> level1 = this.getCategoryEntities(entityList, 0L);
-        Map<String, List<Catelog2Vo>> parent_cid = level1.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
-            // 拿到每一个一级分类 然后查询他们的二级分类
-            List<CategoryEntity> entities = this.getCategoryEntities(entityList, v.getCatId());
-            List<Catelog2Vo> catelog2Vos = null;
-            if (entities != null) {
-                catelog2Vos = entities.stream().map(l2 -> {
-                    Catelog2Vo catelog2Vo = new Catelog2Vo(v.getCatId().toString(), l2.getName(), l2.getCatId().toString(), null);
-                    // 找当前二级分类的三级分类
-                    List<CategoryEntity> level3 = this.getCategoryEntities(entityList, l2.getCatId());
-                    // 三级分类有数据的情况下
-                    if (level3 != null) {
-                        List<Catalog3Vo> catalog3Vos = level3.stream().map(l3 -> new Catalog3Vo(l3.getCatId().toString(), l3.getName(), l2.getCatId().toString())).collect(Collectors.toList());
-                        catelog2Vo.setCatalog3List(catalog3Vos);
-                    }
-                    return catelog2Vo;
-                }).collect(Collectors.toList());
-            }
-            return catelog2Vos;
-        }));
-        return parent_cid;
+        String redisKey = "getCatelogJson";
+        String getCatelogJson = stringRedisTemplate.opsForValue().get(redisKey);
+        if (StringUtils.isBlank(getCatelogJson)) {
+            List<CategoryEntity> entityList = baseMapper.selectList(null);
+            // 查询所有一级分类
+            List<CategoryEntity> level1 = this.getCategoryEntities(entityList, 0L);
+            Map<String, List<Catelog2Vo>> parent_cid = level1.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
+                // 拿到每一个一级分类 然后查询他们的二级分类
+                List<CategoryEntity> entities = this.getCategoryEntities(entityList, v.getCatId());
+                List<Catelog2Vo> catelog2Vos = null;
+                if (entities != null) {
+                    catelog2Vos = entities.stream().map(l2 -> {
+                        Catelog2Vo catelog2Vo = new Catelog2Vo(v.getCatId().toString(), l2.getName(), l2.getCatId().toString(), null);
+                        // 找当前二级分类的三级分类
+                        List<CategoryEntity> level3 = this.getCategoryEntities(entityList, l2.getCatId());
+                        // 三级分类有数据的情况下
+                        if (level3 != null) {
+                            List<Catalog3Vo> catalog3Vos = level3.stream().map(l3 -> new Catalog3Vo(l3.getCatId().toString(), l3.getName(), l2.getCatId().toString())).collect(Collectors.toList());
+                            catelog2Vo.setCatalog3List(catalog3Vos);
+                        }
+                        return catelog2Vo;
+                    }).collect(Collectors.toList());
+                }
+                return catelog2Vos;
+            }));
+            String cateJSON = JSON.toJSONString(parent_cid);
+            stringRedisTemplate.opsForValue().set(redisKey, cateJSON);
+            return parent_cid;
+        } else {
+            Map<String, List<Catelog2Vo>> parent_cid = JSON.parseObject(getCatelogJson, new TypeReference<Map<String, List<Catelog2Vo>>>() {});
+            return parent_cid;
+        }
     }
 
     /**
