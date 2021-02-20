@@ -96,6 +96,15 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("cat_level", 1));
     }
 
+    /**
+     * TODO 产生堆外内存溢出:OutOfDirectMemoryError
+     * 1.springboot2.o以后默认使用Lettuce作为操作redis的客户端。它使用netty进行网络通信
+     * 2.lettuce的bug导致netty堆外内存溢出-Xmx300m; netty如果没有指定堆外内存，默认使用-Xm×300m 可以通过-Dio.netty.maxDirectMemory进行设置
+     * 解决方案:不能使用-Dio.netty.maxDirectMemory只去调大堆外内存。
+     *      1.升级Lettuce客户端
+     *      2.切换使用jedis
+     * @return
+     */
     @Override
     public Map<String, List<Catelog2Vo>> getCatelogJson() {
         String redisKey = "getCatelogJson";
