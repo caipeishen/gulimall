@@ -112,6 +112,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      */
     @Override
     public Map<String, List<Catelog2Vo>> getCatelogJson() {
+        if(1==1){
+            return getCatelogJsonFromDBWithRedisLock();
+        }
         String redisKey = "catelogJSON";
         String catelogJSON = stringRedisTemplate.opsForValue().get(redisKey);
         if (StringUtils.isBlank(catelogJSON)) {
@@ -254,6 +257,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         }
         // 优化：将查询变为一次
         List<CategoryEntity> entityList = baseMapper.selectList(null);
+        System.out.println("查询数据库...");
         
         // 查询所有一级分类
         List<CategoryEntity> level1 = getCategoryEntities(entityList, 0L);
