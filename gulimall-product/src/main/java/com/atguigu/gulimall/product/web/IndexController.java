@@ -3,10 +3,7 @@ package com.atguigu.gulimall.product.web;
 import com.atguigu.gulimall.product.entity.CategoryEntity;
 import com.atguigu.gulimall.product.service.CategoryService;
 import com.atguigu.gulimall.product.vo.Catelog2Vo;
-import org.redisson.api.RCountDownLatch;
-import org.redisson.api.RLock;
-import org.redisson.api.RReadWriteLock;
-import org.redisson.api.RedissonClient;
+import org.redisson.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
@@ -149,6 +146,30 @@ public class IndexController {
         // 每访问一次相当于出去一个人
         door.countDown();
         return id + "走了";
+    }
+    
+    /**
+     * 尝试获取车位 [信号量]
+     * 信号量:也可以用作限流
+     */
+    @ResponseBody
+    @GetMapping("/index/park")
+    public String park() throws InterruptedException {
+        RSemaphore park = redissonClient.getSemaphore("park");
+        //park.acquire();
+        boolean acquire = park.tryAcquire();// 尝试获取信号量，有则true，无则false
+        return "获取车位 =>" + acquire;
+    }
+    
+    /**
+     * 尝试获取车位
+     */
+    @ResponseBody
+    @GetMapping("/index/park/go")
+    public String goPark() {
+        RSemaphore park = redissonClient.getSemaphore("park");
+        park.release();
+        return "ok => 车位+1";
     }
     
 }
