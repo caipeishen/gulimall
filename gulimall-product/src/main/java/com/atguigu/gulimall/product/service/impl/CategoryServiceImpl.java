@@ -8,6 +8,7 @@ import com.atguigu.gulimall.product.vo.Catelog2Vo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -100,7 +101,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      * 缓存击穿 加锁
      *      1.getCatelogJson() 不加锁 使用redis做缓存(会有缓存击穿问题)
      *      2.getCatelogJsonFromDBWithLocalLock() 加本地锁 使用redis做缓存（如果不是分布式系统是可以的）
-     *
+     *      3.getCatelogJsonFromDBWithRedisLock() UUID+redis锁 使用redis做缓存(解决分布式系统问题)
      * TODO 产生堆外内存溢出:OutOfDirectMemoryError
      * 1.springboot2.o以后默认使用Lettuce作为操作redis的客户端。它使用netty进行网络通信
      * 2.lettuce的bug导致netty堆外内存溢出-Xmx300m; netty如果没有指定堆外内存，默认使用-Xm×300m 可以通过-Dio.netty.maxDirectMemory进行设置
@@ -201,6 +202,43 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         synchronized (this) {
             // 双重检查 是否有缓存
             return getDataFromDB();
+        }
+    }
+    
+    /**
+     * 分布式锁
+     *
+     * @return
+     */
+    public Map<String, List<Catelog2Vo>> getCatelogJsonFromDBWithRedisLock() {
+        // 1.占分布式锁  设置这个锁10秒自动删除 [原子操作]
+        String uuid = UUID.randomUUID().toString();
+        Boolean lock = stringRedisTemplate.opsForValue().setIfAbsent("lock", uuid, 30, TimeUnit.SECONDS);
+        
+        if (lock) {
+            // 2.设置过期时间加锁成功 获取数据释放锁 [分布式下必须是Lua脚本删锁,不然会因为业务处理时间、网络延迟等等引起数据还没返回锁过期或者返回的过程中过期 然后把别人的锁删了]
+            Map<String, List<Catelog2Vo>> data;
+            try {
+                data = getDataFromDB();
+            } finally {
+//			stringRedisTemplate.delete("lock");
+                String lockValue = stringRedisTemplate.opsForValue().get("lock");
+                
+                // 删除也必须是原子操作 Lua脚本操作 删除成功返回1 否则返回0
+                String script = "if redis.call('get',KEYS[1]) == ARGV[1] then return redis.call('del',KEYS[1]) else return 0 end";
+                // 原子删锁
+                stringRedisTemplate.execute(new DefaultRedisScript<>(script, Long.class), Arrays.asList("lock"), uuid);
+            }
+            return data;
+        } else {
+            // 重试加锁
+            try {
+                // 登上两百毫秒
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return getCatelogJsonFromDBWithRedisLock();
         }
     }
     
