@@ -10,10 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -97,6 +95,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
 
     /**
+     * 缓存穿透 查询为空的数据也设置缓存，并设置短的过期时间
+     * 缓存雪崩 设置不同的过期时间 固定时长+随机时长
+     * 缓存击穿 加锁
+     *      1.getCatelogJson() 不加锁 使用redis做缓存(会有缓存击穿问题)
+     *      2.getCatelogJsonFromDBWithLocalLock() 加本地锁 使用redis做缓存（如果不是分布式系统是可以的）
+     *
      * TODO 产生堆外内存溢出:OutOfDirectMemoryError
      * 1.springboot2.o以后默认使用Lettuce作为操作redis的客户端。它使用netty进行网络通信
      * 2.lettuce的bug导致netty堆外内存溢出-Xmx300m; netty如果没有指定堆外内存，默认使用-Xm×300m 可以通过-Dio.netty.maxDirectMemory进行设置
@@ -107,9 +111,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      */
     @Override
     public Map<String, List<Catelog2Vo>> getCatelogJson() {
-        String redisKey = "getCatelogJson";
-        String getCatelogJson = stringRedisTemplate.opsForValue().get(redisKey);
-        if (StringUtils.isBlank(getCatelogJson)) {
+        String redisKey = "catelogJSON";
+        String catelogJSON = stringRedisTemplate.opsForValue().get(redisKey);
+        if (StringUtils.isBlank(catelogJSON)) {
             List<CategoryEntity> entityList = baseMapper.selectList(null);
             // 查询所有一级分类
             List<CategoryEntity> level1 = this.getCategoryEntities(entityList, 0L);
@@ -136,7 +140,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
             stringRedisTemplate.opsForValue().set(redisKey, cateJSON);
             return parent_cid;
         } else {
-            Map<String, List<Catelog2Vo>> parent_cid = JSON.parseObject(getCatelogJson, new TypeReference<Map<String, List<Catelog2Vo>>>() {});
+            Map<String, List<Catelog2Vo>> parent_cid = JSON.parseObject(catelogJSON, new TypeReference<Map<String, List<Catelog2Vo>>>() {});
             return parent_cid;
         }
     }
@@ -188,6 +192,55 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      */
     private List<CategoryEntity> getCategoryEntities(List<CategoryEntity> entityList, Long parent_cid) {
         return entityList.stream().filter(item -> item.getParentCid() == parent_cid).collect(Collectors.toList());
+    }
+    
+    /**
+     * redis没有数据 查询DB [本地锁解决方案]
+     */
+    public Map<String, List<Catelog2Vo>> getCatelogJsonFromDBWithLocalLock() {
+        synchronized (this) {
+            // 双重检查 是否有缓存
+            return getDataFromDB();
+        }
+    }
+    
+    /**
+     * redis无缓存 查询数据库
+     */
+    private Map<String, List<Catelog2Vo>> getDataFromDB() {
+        String redisKey = "catelogJSON";
+        String catelogJSON = stringRedisTemplate.opsForValue().get(redisKey);
+        if (!StringUtils.isEmpty(catelogJSON)) {
+            return JSON.parseObject(catelogJSON, new TypeReference<Map<String, List<Catelog2Vo>>>() {
+            });
+        }
+        // 优化：将查询变为一次
+        List<CategoryEntity> entityList = baseMapper.selectList(null);
+        
+        // 查询所有一级分类
+        List<CategoryEntity> level1 = getCategoryEntities(entityList, 0L);
+        Map<String, List<Catelog2Vo>> parent_cid = level1.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
+            // 拿到每一个一级分类 然后查询他们的二级分类
+            List<CategoryEntity> entities = getCategoryEntities(entityList, v.getCatId());
+            List<Catelog2Vo> catelog2Vos = null;
+            if (entities != null) {
+                catelog2Vos = entities.stream().map(l2 -> {
+                    Catelog2Vo catelog2Vo = new Catelog2Vo(v.getCatId().toString(), l2.getName(), l2.getCatId().toString(), null);
+                    // 找当前二级分类的三级分类
+                    List<CategoryEntity> level3 = getCategoryEntities(entityList, l2.getCatId());
+                    // 三级分类有数据的情况下
+                    if (level3 != null) {
+                        List<Catalog3Vo> catalog3Vos = level3.stream().map(l3 -> new Catalog3Vo(l3.getCatId().toString(), l3.getName(), l2.getCatId().toString())).collect(Collectors.toList());
+                        catelog2Vo.setCatalog3List(catalog3Vos);
+                    }
+                    return catelog2Vo;
+                }).collect(Collectors.toList());
+            }
+            return catelog2Vos;
+        }));
+        // 优化：查询到数据库就再锁还没结束之前放入缓存
+        stringRedisTemplate.opsForValue().set(redisKey, JSON.toJSONString(parent_cid), 1, TimeUnit.DAYS);
+        return parent_cid;
     }
 
 }
