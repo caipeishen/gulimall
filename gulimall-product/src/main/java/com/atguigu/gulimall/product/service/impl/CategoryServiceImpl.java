@@ -6,6 +6,9 @@ import com.atguigu.gulimall.product.service.CategoryBrandRelationService;
 import com.atguigu.gulimall.product.vo.Catalog3Vo;
 import com.atguigu.gulimall.product.vo.Catelog2Vo;
 import org.apache.commons.lang.StringUtils;
+import org.redisson.RedissonLock;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -34,7 +37,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
-
+    
+    @Autowired
+    private RedissonClient redissonClient;
+    
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<CategoryEntity> page = this.page(
@@ -101,7 +107,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      * 缓存击穿 加锁
      *      1.getCatelogJson() 不加锁 使用redis做缓存(会有缓存击穿问题)
      *      2.getCatelogJsonFromDBWithLocalLock() 加本地锁 使用redis做缓存（如果不是分布式系统是可以的）
-     *      3.getCatelogJsonFromDBWithRedisLock() UUID+redis锁 使用redis做缓存(解决分布式系统问题)
+     *      3.getCatelogJsonFromDBWithRedisLock() UUID+redis锁+Lua 使用redis做缓存(解决分布式系统问题)
+     *      4.getCatelogJsonFromDBWithRedissonLock() redisson加锁 自带原子性操作，还有看门狗机制，底层也是Lua脚本
+     *
      * TODO 产生堆外内存溢出:OutOfDirectMemoryError
      * 1.springboot2.o以后默认使用Lettuce作为操作redis的客户端。它使用netty进行网络通信
      * 2.lettuce的bug导致netty堆外内存溢出-Xmx300m; netty如果没有指定堆外内存，默认使用-Xm×300m 可以通过-Dio.netty.maxDirectMemory进行设置
@@ -112,9 +120,6 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      */
     @Override
     public Map<String, List<Catelog2Vo>> getCatelogJson() {
-        if(1==1){
-            return getCatelogJsonFromDBWithRedisLock();
-        }
         String redisKey = "catelogJSON";
         String catelogJSON = stringRedisTemplate.opsForValue().get(redisKey);
         if (StringUtils.isBlank(catelogJSON)) {
@@ -209,7 +214,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
     
     /**
-     * 分布式锁
+     * 使用单传的redis分布式锁
      *
      * @return
      */
@@ -243,6 +248,26 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
             }
             return getCatelogJsonFromDBWithRedisLock();
         }
+    }
+    
+    /**
+     * 使用Redisson框架分布式锁
+     *
+     * @return
+     */
+    public Map<String, List<Catelog2Vo>> getCatelogJsonFromDBWithRedissonLock() {
+        // 1、锁的名字。锁的粒度，越细越快。
+        // 锁的粒度:具体缓存的是某个数据，11-号商品;product-11-Lock product-12-Lock
+        RLock lock = redissonClient.getLock("catelogJSON-lock");
+        lock.lock(30, TimeUnit.SECONDS);
+        Map<String, List<Catelog2Vo>> data;
+        try {
+            data = getDataFromDB();
+        } finally {
+            // 2.解锁
+            lock.unlock();
+        }
+        return getCatelogJsonFromDBWithRedisLock();
     }
     
     /**
