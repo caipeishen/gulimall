@@ -59,6 +59,12 @@
             <artifactId>redisson</artifactId>
             <version>3.12.5</version>
         </dependency>
+
+        <!-- SpringCache -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>

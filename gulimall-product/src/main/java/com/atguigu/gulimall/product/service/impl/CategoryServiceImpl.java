@@ -10,6 +10,7 @@ import org.redisson.RedissonLock;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
@@ -95,9 +96,29 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         this.updateById(category);
         categoryBrandRelationService.updateCategory(category.getCatId(),category.getName());
     }
-
+    
+    /**
+     * 使用Cache集成Redis 更快速开发
+     * 1、每一个需要缓存的数据我们都来指定装故到那个名字的缓存。【缓存的分区(按翮业务类型分)】
+     * 2、@Cacheable({"category"})
+     *      代表当前方法的结果需要缓存，如果缓存中有，方法不用调用。
+     *      如果缓存中没有，会调用方法，最后将方法的结果放入缓存
+     * 3、默认行为
+     *      1）、如果缓存中有，不调用改方法
+     *      2）、key默认自动生成，缓存名字::simpleKey，将序列化后的数据放入redis中
+     *      3）、默认ttl时间 -1
+     *
+     *    自定义
+     *      1）、指定生成缓存使用的key，key属性指定，接受一个SpEL
+     *      2）、指定缓存的数据存活时间，配置文件红修改ttl spring.cache.type.redis.time-to-live=3600000
+     *      3）、将数据保存成JSON
+     *
+     * @return
+     */
+    @Cacheable(value = {"category"}, key = "#root.methodName")
     @Override
     public List<CategoryEntity> getLevel1Categorys() {
+        System.out.println("getLevel1Categorys...");
         return baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("cat_level", 1));
     }
 
