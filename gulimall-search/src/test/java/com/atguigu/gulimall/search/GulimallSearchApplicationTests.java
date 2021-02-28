@@ -1,7 +1,7 @@
-package com.atguigu.gulimall.elasticsearch;
+package com.atguigu.gulimall.search;
 
 import com.alibaba.fastjson.JSON;
-import com.atguigu.gulimall.elasticsearch.config.GulimallElasticSearchConfig;
+import com.atguigu.gulimall.search.config.GulimallElasticSearchConfig;
 import lombok.Data;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
@@ -27,7 +27,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.IOException;
 
 @SpringBootTest
-class GulimallElasticSearchApplicationTests {
+class GulimallSearchApplicationTests {
 
     @Autowired
     private RestHighLevelClient client;

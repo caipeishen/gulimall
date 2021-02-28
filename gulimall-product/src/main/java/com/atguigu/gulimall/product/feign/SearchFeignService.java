@@ -13,9 +13,9 @@ import java.util.List;
  * @Date: 2021/2/19 13:58
  * @Description: 检索服务feign
  **/
-@FeignClient("gulimall-elastic-search")
+@FeignClient("gulimall-search")
 public interface SearchFeignService {
 
-	@PostMapping("/elasticsearch/save/product")
+	@PostMapping("/search/save/product")
 	R productStatusUp(@RequestBody List<SkuEsModel> skuEsModels);
 }

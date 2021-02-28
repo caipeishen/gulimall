@@ -1,4 +1,4 @@
-package com.atguigu.gulimall.elasticsearch.constant;
+package com.atguigu.gulimall.search.constant;
 
 /**
  * @Author: Cai Peishen

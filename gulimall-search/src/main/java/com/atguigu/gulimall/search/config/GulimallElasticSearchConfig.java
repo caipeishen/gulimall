@@ -1,4 +1,4 @@
-package com.atguigu.gulimall.elasticsearch.config;
+package com.atguigu.gulimall.search.config;
 
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RequestOptions;

@@ -10,9 +10,9 @@
     </parent>
 
     <groupId>com.atguigu.gulimall</groupId>
-    <artifactId>gulimall-elastic-search</artifactId>
+    <artifactId>gulimall-search</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>gulimall-elastic-search</name>
+    <name>gulimall-search</name>
     <description>谷粒商城-ElasticSearch</description>
 
     <properties>
@@ -53,7 +53,9 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
         </plugins>
+
     </build>
 
 </project>
