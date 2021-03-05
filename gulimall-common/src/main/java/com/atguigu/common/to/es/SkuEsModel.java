@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * <p>Title: SkuEsModel</p>
- * Description：
+ * Description：存储es商品数据
  * "mappings": {
  *     "properties": {
  *       "skuId":{

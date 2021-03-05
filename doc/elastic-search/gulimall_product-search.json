@@ -64,7 +64,7 @@ GET gulimall_product/_search
         "field": "catalogId"
       },
       "aggs": {
-        "cate_agg_name": {
+        "cate_name_agg": {
           "terms": {
             "field": "catalogName"
           }
@@ -76,12 +76,12 @@ GET gulimall_product/_search
         "field": "brandId"
       },
       "aggs": {
-        "brand_agg_name": {
+        "brand_name_agg": {
           "terms": {
             "field": "brandName"
           }
         },
-        "brand_agg_img": {
+        "brand_img_agg": {
           "terms": {
             "field": "brandImg"
           }
