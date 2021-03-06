@@ -1,6 +1,7 @@
 package com.atguigu.gulimall.product.app;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import com.atguigu.common.vaild.AddGroup;
@@ -8,11 +9,7 @@ import com.atguigu.common.vaild.UpdateGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.atguigu.gulimall.product.entity.BrandEntity;
 import com.atguigu.gulimall.product.service.BrandService;
@@ -52,8 +49,18 @@ public class BrandController {
     //@RequiresPermissions("product:brand:info")
     public R info(@PathVariable("brandId") Long brandId){
 		BrandEntity brand = brandService.getById(brandId);
-
         return R.ok().put("brand", brand);
+    }
+
+    /**
+     * 多个品牌信息
+     * @param brandIds
+     * @return
+     */
+    @GetMapping("/infos")
+    public R info(@RequestParam("brandIds") List<Long> brandIds) {
+        List<BrandEntity> brand = brandService.getBrandByIds(brandIds);
+        return R.ok().put("data", brand);
     }
 
     /**

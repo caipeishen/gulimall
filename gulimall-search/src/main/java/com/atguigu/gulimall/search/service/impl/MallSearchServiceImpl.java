@@ -1,9 +1,14 @@
 package com.atguigu.gulimall.search.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.atguigu.common.to.es.SkuEsModel;
+import com.atguigu.common.utils.R;
 import com.atguigu.gulimall.search.constant.EsConstant;
+import com.atguigu.gulimall.search.feign.ProductFeignService;
 import com.atguigu.gulimall.search.service.MallSearchService;
+import com.atguigu.gulimall.search.vo.AttrResponseVo;
+import com.atguigu.gulimall.search.vo.BrandVo;
 import com.atguigu.gulimall.search.vo.SearchParam;
 import com.atguigu.gulimall.search.vo.SearchResult;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +23,6 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.nested.NestedAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.nested.ParsedNested;
@@ -34,7 +38,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,6 +59,9 @@ public class MallSearchServiceImpl implements MallSearchService {
 
     @Autowired
     private RestHighLevelClient restHighLevelClient;
+
+    @Resource
+    private ProductFeignService productFeignService;
 
     @Override
     public SearchResult search(SearchParam param) {
@@ -239,6 +249,8 @@ public class MallSearchServiceImpl implements MallSearchService {
 
             String cate_agg_name = ((ParsedStringTerms) bucket.getAggregations().get("cate_name_agg")).getBuckets().get(0).getKeyAsString();
             catalogVo.setCatalogName(cate_agg_name);
+
+            catalogList.add(catalogVo);
         }
         result.setCatalogs(catalogList);
 
@@ -256,6 +268,8 @@ public class MallSearchServiceImpl implements MallSearchService {
 
             String brand_name = ((ParsedStringTerms) bucket.getAggregations().get("brand_name_agg")).getBuckets().get(0).getKeyAsString();
             brandVo.setBrandName(brand_name);
+
+            brandVoList.add(brandVo);
         }
         result.setBrands(brandVoList);
 
@@ -274,8 +288,9 @@ public class MallSearchServiceImpl implements MallSearchService {
             List<String> attrValue = ((ParsedStringTerms) bucket.getAggregations().get("attr_value_agg")).getBuckets().stream().map(item -> {
                 return item.getKeyAsString();
             }).collect(Collectors.toList());
-
             attrVo.setAttrValue(attrValue);
+
+            attrList.add(attrVo);
         }
         result.setAttrs(attrList);
 
@@ -292,10 +307,79 @@ public class MallSearchServiceImpl implements MallSearchService {
         int totalPages = (int) (total%EsConstant.PRODUCT_PASIZE == 0 ? (total / EsConstant.PRODUCT_PASIZE) : (total / EsConstant.PRODUCT_PASIZE + 1));
         result.setTotalPages(totalPages);
 
+        // 设置导航页
+        ArrayList<Integer> pageNavs = new ArrayList<>();
+        for (int i = 1;i <= totalPages; i++){
+            pageNavs.add(i);
+        }
+        result.setPageNavs(pageNavs);
+
+        // 6.构建面包屑导航功能
+        if(param.getAttrs() != null){
+            List<SearchResult.NavVo> navVos = param.getAttrs().stream().map(attr -> {
+                SearchResult.NavVo navVo = new SearchResult.NavVo();
+                String[] s = attr.split("_");
+                navVo.setNavValue(s[1]);
+                R r = productFeignService.getAttrsInfo(Long.parseLong(s[0]));
+                // 将已选择的请求参数添加进去 前端页面进行排除
+                result.getAttrIds().add(Long.parseLong(s[0]));
+                if(r.getCode() == 0){
+                    AttrResponseVo data = r.getData("attr", new TypeReference<AttrResponseVo>(){});
+                    navVo.setName(data.getAttrName());
+                }else{
+                    // 失败了就拿id作为名字
+                    navVo.setName(s[0]);
+                }
+                // 拿到所有查询条件 替换查询条件
+                String replace = replaceQueryString(param, attr, "attrs");
+                navVo.setLink("http://search.glmall.com/list.html?" + replace);
+                return navVo;
+            }).collect(Collectors.toList());
+            result.setNavs(navVos);
+        }
+
+        // 品牌、分类
+        if(param.getBrandId() != null && param.getBrandId().size() > 0){
+            List<SearchResult.NavVo> navs = result.getNavs();
+            SearchResult.NavVo navVo = new SearchResult.NavVo();
+            navVo.setName("品牌");
+            R r = productFeignService.brandInfo(param.getBrandId());
+            if(r.getCode() == 0){
+                // TODO 这里转换有点问题 不想处理了 品牌名称两个实体类名字不同 所以展示为null
+                List<BrandVo> brand = r.getData("data", new TypeReference<List<BrandVo>>() {});
+                StringBuffer buffer = new StringBuffer();
+                // 替换所有品牌ID
+                String replace = "";
+                for (BrandVo brandVo : brand) {
+                    buffer.append(brandVo.getBrandName() + ";");
+                    replace = replaceQueryString(param, brandVo.getBrandId() + "", "brandId");
+                }
+                navVo.setNavValue(buffer.toString());
+                navVo.setLink("http://search.glmall.com/list.html?" + replace);
+            }
+            navs.add(navVo);
+        }
 
         log.info("构建结果：" + result);
 
         return result;
+    }
+
+    /**
+     * 替换字符
+     * key ：需要替换的key
+     */
+    private String replaceQueryString(SearchParam Param, String value, String key) {
+        String encode = null;
+        try {
+            encode = URLEncoder.encode(value,"UTF-8");
+            // 浏览器对空格的编码和java的不一样
+            encode = encode.replace("+","%20");
+            encode = encode.replace("%28", "(").replace("%29",")");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return Param.get_queryString().replace("&" + key + "=" + encode, "");
     }
 
 }
