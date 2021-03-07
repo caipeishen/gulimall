@@ -20,8 +20,6 @@ public class SkuItemVo {
      */
     private SkuInfoEntity info;
 
-    private boolean hasStock = true;
-
     /**
      * 图片信息
      */
@@ -41,6 +39,11 @@ public class SkuItemVo {
      * 参数规格信息
      */
     private List<SpuItemAttrGroup> groupAttrs;
+
+    /**
+     * 是否有库存
+     */
+    private boolean hasStock = true;
 
     /**
      * 秒杀信息
