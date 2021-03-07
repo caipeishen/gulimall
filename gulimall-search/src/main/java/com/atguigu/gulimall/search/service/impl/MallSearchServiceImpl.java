@@ -332,7 +332,7 @@ public class MallSearchServiceImpl implements MallSearchService {
                 }
                 // 拿到所有查询条件 替换查询条件
                 String replace = replaceQueryString(param, attr, "attrs");
-                navVo.setLink("http://search.glmall.com/list.html?" + replace);
+                navVo.setLink("http://search.gulimall.com/list.html?" + replace);
                 return navVo;
             }).collect(Collectors.toList());
             result.setNavs(navVos);
@@ -355,7 +355,7 @@ public class MallSearchServiceImpl implements MallSearchService {
                     replace = replaceQueryString(param, brandVo.getBrandId() + "", "brandId");
                 }
                 navVo.setNavValue(buffer.toString());
-                navVo.setLink("http://search.glmall.com/list.html?" + replace);
+                navVo.setLink("http://search.gulimall.com/list.html?" + replace);
             }
             navs.add(navVo);
         }

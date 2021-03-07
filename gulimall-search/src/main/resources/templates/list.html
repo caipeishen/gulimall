@@ -16,7 +16,7 @@
   <div class="header_head_box">
     <b class="header_head_p">
       <div style="overflow: hidden">
-        <a href="http://glmall.com/" class="header_head_p_a1" style="width:73px;">
+        <a href="http://gulimall.com/" class="header_head_p_a1" style="width:73px;">
           谷粒商城首页
         </a>
         <a href="/list.html" class="header_head_p_a">
@@ -62,16 +62,16 @@
     </b>
     <ul>
       <li th:if="${session.loginUser} ==null">
-        <a href="http://auth.glmall.com/login.html" class="li_2">你好，请登录</a>
+        <a href="http://auth.gulimall.com/login.html" class="li_2">你好，请登录</a>
       </li>
       <li th:if="${session.loginUser} !=null">
         <a class="li_2">欢迎，[[${session.loginUser.username}]]</a>
       </li>
       <li th:if="${session.loginUser} !=null">
-        <a href="http://auth.glmall.com/oauth2.0/logout">退出登录</a>
+        <a href="http://auth.gulimall.com/oauth2.0/logout">退出登录</a>
       </li>
       <li th:if="${session.loginUser} ==null">
-        <a href="http://auth.glmall.com/reg.html" style="color: red;">免费注册</a>
+        <a href="http://auth.gulimall.com/reg.html" style="color: red;">免费注册</a>
       </li>
       <span>|</span>
       <li th:if="${session.loginUser} !=null">
@@ -401,7 +401,7 @@
 <!--搜索导航-->
 <div class="header_sous">
   <div class="logo">
-    <a href="http://glmall.com/"><img src="/static/search/./image/logo1.jpg" alt=""></a>
+    <a href="http://gulimall.com/"><img src="/static/search/./image/logo1.jpg" alt=""></a>
   </div>
   <div class="header_form">
     <input id="keyword_input" type="text" placeholder="手机" th:value="${param.keyword}"/>
@@ -1174,7 +1174,7 @@
                 <a href="/list.html">关注</a>
               </div>
               <p class="da">
-                <a th:href="|http://item.glmall.com/${product.skuId}.html|">
+                <a th:href="|http://item.gulimall.com/${product.skuId}.html|">
                   <img th:src="${product.skuImg}" class="dim">
                 </a>
               </p>
