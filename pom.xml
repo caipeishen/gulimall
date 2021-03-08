@@ -21,6 +21,7 @@
         <module>gulimall-ware</module>
         <module>gulimall-third-party</module>
         <module>gulimall-search</module>
+        <module>gulimall-auth-server</module>
         <module>renren-fast</module>
         <module>renren-generator</module>
     </modules>
