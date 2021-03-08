@@ -12,6 +12,11 @@
     <artifactId>gulimall-common</artifactId>
     <description>每一微服务公共的依赖，bean，工具类</description>
 
+    <properties>
+        <commons.lang.version>2.6</commons.lang.version>
+        <mysql.version>8.0.17</mysql.version>
+    </properties>
+
     <dependencies>
         <!-- mybatis-plus -->
         <dependency>
@@ -38,7 +43,7 @@
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
+            <version>${commons.lang.version}</version>
         </dependency>
 
         <!--    导入mysql驱动    -->
@@ -46,7 +51,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.17</version>
+            <version>${mysql.version}</version>
         </dependency>
 
         <!-- 打包时不需要 -->
@@ -67,6 +72,13 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+
+        <!-- Http请求 -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.2.1</version>
         </dependency>
 
     </dependencies>
