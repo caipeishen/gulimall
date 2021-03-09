@@ -5298,7 +5298,7 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
 			if($(this).hasClass("disabled")){
 				// 1.进入倒计时效果
 			}else{
-				$.get("/sms/snedcode?phone=" + $("#phoneNum").val(), function (data) {
+				$.get("/sms/sendcode?phone=" + $("#phoneNum").val(), function (data) {
 					if(data.code != 0){
 						layer.msg(data.msg)
 					}

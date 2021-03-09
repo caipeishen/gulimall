@@ -26,10 +26,13 @@ public class SmsSendController {
      */
     @GetMapping("/sendcode")
     public R sendCode(@RequestParam("phone") String phone, @RequestParam("code") String code){
-        if(!"fail".equals(smsComponent.sendSmsCode(phone, code).split("_")[0])){
-            return R.ok();
-        }
-        return R.error(BizCodeEnum.SMS_SEND_CODE_EXCEPTION.getCode(), BizCodeEnum.SMS_SEND_CODE_EXCEPTION.getMsg());
+        return R.ok();
+        // TODO 注销掉发送短信
+//        String result = this.smsComponent.sendSmsCode(phone, code);
+//        if(!"fail".equals(result.split("_")[0])){
+//            return R.ok();
+//        }
+        //return R.error(BizCodeEnum.SMS_SEND_CODE_EXCEPTION.getCode(), BizCodeEnum.SMS_SEND_CODE_EXCEPTION.getMsg());
     }
 
 }
