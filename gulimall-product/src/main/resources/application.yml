@@ -26,6 +26,9 @@ spring:
       #key-prefix: CACHE_
       use-key-prefix: true
       cache-null-values: true # 解决缓存穿透问题
+  # spring-session
+  session:
+    store-type: redis
 
 
 mybatis-plus:
