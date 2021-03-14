@@ -1,0 +1,10 @@
+spring:
+  redis:
+    host: 192.168.181.130
+
+sso:
+  server:
+    login-url: http://ssoserver.com:8080/login.html
+
+server:
+  port: 8082
