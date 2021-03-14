@@ -14,6 +14,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 7.这时跳转到ssoserver认证中心，并且携带参数redirect_url(访问client2的url)
  * 8.认证中心判断当前是否曾登录过(认证服务中心的cookie[ssoserver.com域名的cookie])，如果没有跳转到登录界面，如果有则表示曾登陆过，再通过cookie从redis中获取，获取到则表示没有过期
  * 9.再跳转到client2同时拼接参数 ?token=
+ *
+ *
+ * 核心：
+ *  1.给登录服务器留下登录痕迹
+ *  2.登录服务器重定向url的时候，要将token信息带上
+ *  3.其他系统要处理url上的关键token，去redis验证得到登录的信息
  */
 @SpringBootApplication
 public class GulimallTestSsoServerApplication {
