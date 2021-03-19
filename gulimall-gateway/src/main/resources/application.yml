@@ -17,35 +17,35 @@ spring:
 #          predicates:
 #            - Query=url,baidu
 
-          - id: product_route
+          - id: gulimall_product_route
             uri: lb://gulimall-product
             predicates:
               - Path=/api/product/**
             filters:
               - RewritePath=/api/(?<segment>.*),/$\{segment}
 
-          - id: thirdparty_route
+          - id: gulimall_thirdparty_route
             uri: lb://gulimall-third-party
             predicates:
               - Path=/api/thirdparty/**
             filters:
               - RewritePath=/api/(?<segment>.*),/$\{segment}
 
-          - id: member_route
+          - id: gulimall_member_route
             uri: lb://gulimall-member
             predicates:
               - Path=/api/member/**
             filters:
               - RewritePath=/api/(?<segment>.*),/$\{segment}
 
-          - id: ware_route
+          - id: gulimall_ware_route
             uri: lb://gulimall-ware
             predicates:
               - Path=/api/ware/**
             filters:
               - RewritePath=/api/(?<segment>.*),/$\{segment}
 
-          - id: admin_route
+          - id: gulimall_admin_route
             uri: lb://renren-fast
             predicates:
               - Path=/api/**
@@ -66,5 +66,11 @@ spring:
             uri: lb://gulimall-auth-server
             predicates:
               - Host=auth.gulimall.com
+
+          - id: gulimall_cart_route
+            uri: lb://gulimall-cart
+            predicates:
+              - Host=cart.gulimall.com
+
 server:
   port: 88
