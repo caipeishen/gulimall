@@ -10,7 +10,7 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
 /**
  * @Author: Cai Peishen
  * @Date: 2021/3/19 22:10
- * @Description:
+ * @Description: spring-session共享配置
  **/
 @Configuration
 public class MySessionConfig {
@@ -19,8 +19,8 @@ public class MySessionConfig {
     public CookieSerializer cookieSerializer(){
         DefaultCookieSerializer cookieSerializer = new DefaultCookieSerializer();
         // 明确的指定Cookie的作用域
-        cookieSerializer.setDomainName("glmall.com");
-        cookieSerializer.setCookieName("FIRESESSION");
+        cookieSerializer.setDomainName("gulimall.com");
+        cookieSerializer.setCookieName("GULIMALL_SESSION");
         return cookieSerializer;
     }
 

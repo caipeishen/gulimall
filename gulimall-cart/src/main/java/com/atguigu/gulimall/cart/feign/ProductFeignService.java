@@ -13,7 +13,7 @@ import java.util.List;
  * @Date: 2021/3/19 22:22
  * @Description:
  **/
-@FeignClient("gulimall-cart")
+@FeignClient("gulimall-product")
 public interface ProductFeignService {
 
     @RequestMapping("/product/skuinfo/info/{skuId}")
