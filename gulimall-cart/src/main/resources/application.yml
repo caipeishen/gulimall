@@ -5,6 +5,18 @@ spring:
     nacos:
       discovery:
         server-addr: 192.168.181.130:8848
+  redis:
+    host: 192.168.181.130
 
 server:
   port: 40000
+
+
+# 自定义线程池配置
+gulimall:
+  thread:
+    core-size: 20
+    max-size: 200
+    keep-alive-time: 10
+
+
