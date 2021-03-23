@@ -14,7 +14,18 @@ spring:
   rabbitmq:
     host: 192.168.181.130
     port: 5672
+    username: guest
+    password: guest
     virtual-host: /
+    publisher-confirms: true # 开启发送端确认
+    publisher-returns: true  # 开启发送端消息抵达队列的确认
+    template:
+      mandatory: true # 只要抵达队列，以异步发送优先回调我们这个returnConfirm
+    listener:
+      direct:
+        acknowledge-mode: manual # 手动ack确认消息
+
+
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
