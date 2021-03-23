@@ -7,6 +7,7 @@ spring:
     url: jdbc:mysql://192.168.181.130:3306/gulimall_oms?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.jdbc.Driver
   cloud:
+    # nacos注册中心
     nacos:
       discovery:
         server-addr: 192.168.181.130:8848
@@ -24,7 +25,13 @@ spring:
     listener:
       direct:
         acknowledge-mode: manual # 手动ack确认消息
-
+  session:
+    store-type: redis # spring-session
+  thymeleaf:
+    cache: false
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
 
 
 mybatis-plus:
@@ -39,3 +46,10 @@ server:
 logging:
   level:
     com.atguigu.gulimall: debug
+
+# 自定义线程池配置
+gulimall:
+  thread:
+    core-size: 20
+    max-size: 200
+    keep-alive-time: 10
