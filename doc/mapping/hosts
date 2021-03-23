@@ -1,0 +1,30 @@
+# gulimall
+192.168.181.130	gulimall.com
+192.168.181.130	search.gulimall.com
+192.168.181.130	item.gulimall.com
+192.168.181.130	auth.gulimall.com
+192.168.181.130	cart.gulimall.com
+192.168.181.130	order.gulimall.com
+
+# sso
+127.0.0.1 ssoserver.com
+127.0.0.1 clienta.com
+127.0.0.1 clientb.com
+
+# sso
+127.0.0.1 ssoserver.com
+127.0.0.1 client1.com
+127.0.0.1 client2.com
+
+# github
+13.229.188.59 github.com
+#157.240.20.8 github.global.ssl.fastly.net
+
+# bilibili
+120.92.174.135 bilibili.com
+
+
+# xxl-sso
+127.0.0.1 xxlssoserver.com
+127.0.0.1 xxlssoclient1.com
+127.0.0.1 xxlssoclient2.com
