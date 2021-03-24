@@ -136,6 +136,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         return confirmVo;
     }
 
+    // 本地事务，在分布式系统，只能控制住自己的回滚，控制不了其他服务的回滚
+    // 分布式事务:最大原因。网络问题+分布式机器。
     @Override
     @Transactional
     public SubmitOrderResponseVo submitOrder(OrderSubmitVo vo) {
