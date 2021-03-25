@@ -40,7 +40,6 @@ import com.atguigu.common.utils.Query;
 import com.atguigu.gulimall.order.dao.OrderDao;
 import com.atguigu.gulimall.order.entity.OrderEntity;
 import com.atguigu.gulimall.order.service.OrderService;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -139,8 +138,16 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     // 本地事务，在分布式系统，只能控制住自己的回滚，控制不了其他服务的回滚
     // 分布式事务:最大原因。网络问题+分布式机器。
+
+    /**
+     * @GlobalTransactional
+     * 并发量不高 可以使用seata的AT模式
+     * 给分布式大事务的入口标注@GLobaLTransactional
+     * 每一个远程的小事务用@Transactional
+     * @param vo
+     * @return
+     */
     @Override
-    @Transactional
     @GlobalTransactional
     public SubmitOrderResponseVo submitOrder(OrderSubmitVo vo) {
         // 当条线程共享这个对象(省去了调用下方方法的入参)
@@ -150,8 +157,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         submitVo.setCode(0);
         // 去服务器创建订单,验令牌,验价格,所库存
         MemberRsepVo memberRsepVo = LoginUserInterceptor.threadLocal.get();
-        // 1. 验证令牌 [必须保证原子性] 返回 0 or 1
-        // 0 令牌删除失败 1删除成功
+        // 1. 验证令牌 [必须保证原子性] 返回 0(令牌删除失败)or 1(删除成功)
         String script = "if redis.call('get',KEYS[1]) == ARGV[1] then return redis.call('del',KEYS[1]) else return 0 end";
         String orderToken = vo.getOrderToken();
 

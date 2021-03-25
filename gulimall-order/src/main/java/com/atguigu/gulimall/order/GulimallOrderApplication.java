@@ -31,7 +31,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
  *          registry.conf
  *          file.conf     service模块：vgroup_mapping.{application.name}-fescar-service-group = "default"
  *      5、给分布式大事务的入口标注@GLobaLTransactional
- *      7、每一个远程的小事务用@TransactionaL
+ *      7、每一个远程的小事务用@Transactional
  *
  */
 @EnableFeignClients
