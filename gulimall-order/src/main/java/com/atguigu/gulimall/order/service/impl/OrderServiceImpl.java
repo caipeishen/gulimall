@@ -16,7 +16,6 @@ import com.atguigu.gulimall.order.service.OrderItemService;
 import com.atguigu.gulimall.order.to.OrderCreateTo;
 import com.atguigu.gulimall.order.vo.*;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
-import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -40,6 +39,7 @@ import com.atguigu.common.utils.Query;
 import com.atguigu.gulimall.order.dao.OrderDao;
 import com.atguigu.gulimall.order.entity.OrderEntity;
 import com.atguigu.gulimall.order.service.OrderService;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -138,17 +138,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     // 本地事务，在分布式系统，只能控制住自己的回滚，控制不了其他服务的回滚
     // 分布式事务:最大原因。网络问题+分布式机器。
-
-    /**
-     * @GlobalTransactional
-     * 并发量不高 可以使用seata的AT模式
-     * 给分布式大事务的入口标注@GLobaLTransactional
-     * 每一个远程的小事务用@Transactional
-     * @param vo
-     * @return
-     */
     @Override
-    @GlobalTransactional
+    @Transactional // TODO 使用柔性事务，消息可靠性+最终一致性(seata不适合高并发场景)
     public SubmitOrderResponseVo submitOrder(OrderSubmitVo vo) {
         // 当条线程共享这个对象(省去了调用下方方法的入参)
         confirmVoThreadLocal.set(vo);
