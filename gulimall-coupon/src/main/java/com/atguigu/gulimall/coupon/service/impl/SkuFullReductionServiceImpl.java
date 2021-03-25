@@ -24,6 +24,7 @@ import com.atguigu.common.utils.Query;
 import com.atguigu.gulimall.coupon.dao.SkuFullReductionDao;
 import com.atguigu.gulimall.coupon.entity.SkuFullReductionEntity;
 import com.atguigu.gulimall.coupon.service.SkuFullReductionService;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("skuFullReductionService")
@@ -46,6 +47,7 @@ public class SkuFullReductionServiceImpl extends ServiceImpl<SkuFullReductionDao
     }
 
     @Override
+    @Transactional
     public void saveSkuReduction(SkuReductionTo reductionTo) {
         //1、// //5.4）、sku的优惠、满减等信息；gulimall_sms->sms_sku_ladder\sms_sku_full_reduction\sms_member_price
         //sms_sku_ladder
@@ -55,7 +57,7 @@ public class SkuFullReductionServiceImpl extends ServiceImpl<SkuFullReductionDao
         skuLadderEntity.setDiscount(reductionTo.getDiscount());
         skuLadderEntity.setAddOther(reductionTo.getCountStatus());
         if(reductionTo.getFullCount() > 0){
-            skuLadderService.save(skuLadderEntity);
+            this.skuLadderService.save(skuLadderEntity);
         }
 
         //2、sms_sku_full_reduction
@@ -81,7 +83,7 @@ public class SkuFullReductionServiceImpl extends ServiceImpl<SkuFullReductionDao
             return item.getMemberPrice().compareTo(new BigDecimal("0")) == 1;
         }).collect(Collectors.toList());
 
-        memberPriceService.saveBatch(collect);
+        this.memberPriceService.saveBatch(collect);
     }
 
 }

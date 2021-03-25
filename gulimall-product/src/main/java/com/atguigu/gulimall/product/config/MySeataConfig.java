@@ -1,4 +1,4 @@
-package com.atguigu.gulimall.order.conf;
+package com.atguigu.gulimall.product.config;
 
 import com.zaxxer.hikari.HikariDataSource;
 import io.seata.rm.datasource.DataSourceProxy;
