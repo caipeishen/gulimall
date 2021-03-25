@@ -16,6 +16,7 @@ import com.atguigu.gulimall.order.service.OrderItemService;
 import com.atguigu.gulimall.order.to.OrderCreateTo;
 import com.atguigu.gulimall.order.vo.*;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -140,6 +141,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     // 分布式事务:最大原因。网络问题+分布式机器。
     @Override
     @Transactional
+    @GlobalTransactional
     public SubmitOrderResponseVo submitOrder(OrderSubmitVo vo) {
         // 当条线程共享这个对象(省去了调用下方方法的入参)
         confirmVoThreadLocal.set(vo);
