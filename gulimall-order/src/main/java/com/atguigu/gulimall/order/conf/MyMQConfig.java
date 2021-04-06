@@ -31,7 +31,7 @@ public class MyMQConfig {
     public static final String releaseQueue = "order.release.order.queue";
     
     
-    public static final String ttl = "900000";
+    public static final Integer ttl = 30000;
     
     
     @Bean
@@ -49,7 +49,7 @@ public class MyMQConfig {
         Map<String ,Object> arguments = new HashMap<>();
         arguments.put("x-dead-letter-exchange", eventExchange);
         arguments.put("x-dead-letter-routing-key", releaseRoutingKey);
-        arguments.put("x-message-ttl", ttl);
+        arguments.put("x-message-ttl", ttl); // 30秒 过期时间 毫秒单位 一定要是整数类型
         return new Queue(delayQueue, true, false, false, arguments);
     }
     

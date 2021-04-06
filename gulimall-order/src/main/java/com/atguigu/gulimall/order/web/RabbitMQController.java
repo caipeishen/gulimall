@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 import java.util.UUID;
@@ -20,7 +21,7 @@ import java.util.UUID;
  * @Date: 2021/4/2 17:36
  * @Description:
  */
-@Controller
+@RestController
 public class RabbitMQController {
     
     @Autowired
@@ -31,7 +32,7 @@ public class RabbitMQController {
      * @param num
      * @return
      */
-    @GetMapping("/sendMQ")
+    @GetMapping("/test/sendMQ")
     public String sendMQ(@RequestParam(value = "num", required = false, defaultValue = "10") Integer num){
         OrderEntity entity = new OrderEntity();
         entity.setId(1L);
@@ -65,7 +66,6 @@ public class RabbitMQController {
      * 测试发送创建订单
      * @return
      */
-    @ResponseBody
     @GetMapping("/test/createOrder")
     public String createOrderTest(){
         OrderEntity orderEntity = new OrderEntity();

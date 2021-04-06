@@ -17,7 +17,7 @@ import java.io.IOException;
  * @Description:
  */
 @Component
-@RabbitListener(queues = { MyRabbitConfig.queue} )
+@RabbitListener(queues = { MyRabbitConfig.queue } )
 public class RabbitMQListener {
     
     /**
