@@ -39,29 +39,43 @@ public class MyMQConfig {
         return new TopicExchange(eventExchange, true, false);
     }
     
-
+    
+    /**
+     * 延迟队列
+     * @return
+     */
     @Bean
     public Queue orderDelayQueue(){
         Map<String ,Object> arguments = new HashMap<>();
         arguments.put("x-dead-letter-exchange", eventExchange);
         arguments.put("x-dead-letter-routing-key", releaseRoutingKey);
         arguments.put("x-message-ttl", ttl);
-        Queue queue = new Queue(delayQueue, true, false, false, arguments);
-        return queue;
+        return new Queue(delayQueue, true, false, false, arguments);
     }
     
+    /**
+     * 普通队列，用于解锁订单
+     * @return
+     */
     @Bean
     public Queue orderReleaseOrderQueue(){
-        Queue queue = new Queue(releaseQueue, true, false, false);
-        return queue;
+        return new Queue(releaseQueue, true, false, false);
     }
     
-
+    
+    /**
+     * 交换机和延迟队列绑定
+     * @return
+     */
     @Bean
     public Binding orderCreateOrderBinding(){
         return new Binding(delayQueue, Binding.DestinationType.QUEUE, eventExchange, createOrderRoutingKey, null);
     }
     
+    /**
+     * 交换机和普通队列绑定
+     * @return
+     */
     @Bean
     public Binding orderReleaseOrderBinding(){
         return new Binding(releaseQueue, Binding.DestinationType.QUEUE, eventExchange, releaseRoutingKey, null);

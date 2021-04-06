@@ -21,7 +21,7 @@ import java.util.UUID;
  * @Description:
  */
 @Controller
-public class HelloController {
+public class RabbitMQController {
     
     @Autowired
     private RabbitTemplate rabbitTemplate;

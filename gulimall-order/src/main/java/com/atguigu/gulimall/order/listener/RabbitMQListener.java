@@ -18,7 +18,7 @@ import java.io.IOException;
  */
 @Component
 @RabbitListener(queues = { MyRabbitConfig.queue} )
-public class MessageListener {
+public class RabbitMQListener {
     
     /**
      * 	1.Message message: 原生消息类型 详细信息
