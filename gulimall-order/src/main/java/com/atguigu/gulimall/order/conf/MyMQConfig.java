@@ -34,13 +34,8 @@ public class MyMQConfig {
     public static final String ttl = "900000";
     
     
-    /**
-     * String name, boolean durable, boolean autoDelete, Map<String, Object> arguments
-     * @return
-     */
     @Bean
     public Exchange orderEventExchange(){
-        
         return new TopicExchange(eventExchange, true, false);
     }
     

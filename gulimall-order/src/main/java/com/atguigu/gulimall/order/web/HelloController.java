@@ -1,12 +1,15 @@
 package com.atguigu.gulimall.order.web;
 
 import com.atguigu.gulimall.order.conf.MyMQConfig;
+import com.atguigu.gulimall.order.conf.MyRabbitConfig;
 import com.atguigu.gulimall.order.entity.OrderEntity;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import com.atguigu.gulimall.order.entity.OrderItemEntity;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Date;
@@ -24,12 +27,38 @@ public class HelloController {
     private RabbitTemplate rabbitTemplate;
     
     /**
-     * 监听过期的订单
-     * @param orderEntity
+     * 测试发送消息
+     * @param num
+     * @return
      */
-    @RabbitListener(queues = MyMQConfig.releaseQueue)
-    public void listener(OrderEntity orderEntity) {
-        System.out.println("收到过期的订单信息:准备关闭订单" + orderEntity.getOrderSn());
+    @GetMapping("/sendMQ")
+    public String sendMQ(@RequestParam(value = "num", required = false, defaultValue = "10") Integer num){
+        OrderEntity entity = new OrderEntity();
+        entity.setId(1L);
+        entity.setCommentTime(new Date());
+        entity.setCreateTime(new Date());
+        entity.setConfirmStatus(0);
+        entity.setAutoConfirmDay(1);
+        entity.setGrowth(1);
+        entity.setMemberId(12L);
+        
+        OrderItemEntity orderEntity = new OrderItemEntity();
+        orderEntity.setCategoryId(225L);
+        orderEntity.setId(1L);
+        orderEntity.setOrderSn("gulimall");
+        orderEntity.setSpuName("华为");
+        for (int i = 0; i < num; i++) {
+            if(i % 2 == 0){
+                entity.setReceiverName("Cai Peishen-" + i);
+                rabbitTemplate.convertAndSend(MyRabbitConfig.exchange, MyRabbitConfig.routingKey, entity, new CorrelationData(UUID.randomUUID().toString().replace("-","")));
+            }else {
+                orderEntity.setOrderSn("gulimall-" + i);
+                rabbitTemplate.convertAndSend(MyRabbitConfig.exchange, MyRabbitConfig.routingKey, orderEntity, new CorrelationData(UUID.randomUUID().toString().replace("-","")));
+                // 测试消息发送失败
+//				rabbitTemplate.convertAndSend(MyRabbitConfig.exchange, MyRabbitConfig.routingKey + "test", orderEntity);
+            }
+        }
+        return "ok";
     }
     
     /**
