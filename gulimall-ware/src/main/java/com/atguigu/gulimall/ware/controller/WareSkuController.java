@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.atguigu.common.exception.BizCodeEnum;
-import com.atguigu.common.exception.NotStockException;
+import com.atguigu.common.exception.NoStockException;
 import com.atguigu.common.to.es.SkuHasStockVo;
 import com.atguigu.gulimall.ware.vo.WareSkuLockVo;
 import lombok.extern.slf4j.Slf4j;
@@ -109,7 +109,7 @@ public class WareSkuController {
         try {
             this.wareSkuService.orderLockStock(vo);
             return R.ok();
-        } catch (NotStockException e) {
+        } catch (NoStockException e) {
             log.warn(e.getMessage());
         }
         return R.error(BizCodeEnum.NOT_STOCK_EXCEPTION.getCode(), BizCodeEnum.NOT_STOCK_EXCEPTION.getMsg());

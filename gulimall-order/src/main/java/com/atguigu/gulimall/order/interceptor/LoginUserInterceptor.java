@@ -24,11 +24,12 @@ public class LoginUserInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
 		String uri = request.getRequestURI();
-		// 这个请求直接放行
-		boolean match = new AntPathMatcher().match("/order/order/status/**", uri);
-		if(match){
-			return true;
-		}
+
+		AntPathMatcher matcher = new AntPathMatcher();
+		boolean match1 = matcher.match("/order/order/infoByOrderSn/**", uri);
+		boolean match2 = matcher.match("/payed/**", uri);
+		if (match1||match2) return true;
+
 		HttpSession session = request.getSession();
 		MemberRsepVo memberRsepVo = (MemberRsepVo) session.getAttribute(AuthServerConstant.LOGIN_USER);
 		if(memberRsepVo != null){

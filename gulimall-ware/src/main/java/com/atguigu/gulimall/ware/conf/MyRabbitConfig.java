@@ -48,7 +48,7 @@ public class MyRabbitConfig {
         HashMap<String, Object> arguments = new HashMap<>();
         arguments.put("x-dead-letter-exchange", "stock-event-exchange");
         arguments.put("x-dead-letter-routing-key", "stock.release");
-        arguments.put("x-message-ttl", 120000);// 2分钟 过期时间 毫秒单位 一定要是整数类型
+        arguments.put("x-message-ttl", 60000);// 1分钟 过期时间 毫秒单位 一定要是整数类型
         return new Queue("stock.delay.queue", true, false, false, arguments);
     }
     

@@ -2,7 +2,7 @@ package com.atguigu.gulimall.order.service.impl;
 
 import com.alibaba.fastjson.TypeReference;
 import com.atguigu.common.enume.OrderStatusEnum;
-import com.atguigu.common.exception.NotStockException;
+import com.atguigu.common.exception.NoStockException;
 import com.atguigu.common.utils.R;
 import com.atguigu.common.vo.MemberRsepVo;
 import com.atguigu.gulimall.order.constant.OrderConstant;
@@ -186,11 +186,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 if(r.getCode() == 0){
                     // 库存足够 锁定成功
                     submitVo.setOrderEntity(order.getOrder());
-//					int i = 10/0;
+					int i = 10/0;
                 } else {
                     // 锁定失败
                     String msg = (String) r.get("msg");
-                    throw new NotStockException(msg);
+                    throw new NoStockException(msg);
                 }
             }else {
                 // 价格验证失败
@@ -198,6 +198,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             }
         }
         return submitVo;
+    }
+
+    @Override
+    public OrderEntity getOrderByOrderSn(String orderSn) {
+        OrderEntity order_sn = this.getOne(new QueryWrapper<OrderEntity>().eq("order_sn", orderSn));
+        return order_sn;
     }
 
 
