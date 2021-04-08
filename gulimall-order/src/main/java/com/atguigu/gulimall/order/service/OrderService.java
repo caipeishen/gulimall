@@ -32,5 +32,10 @@ public interface OrderService extends IService<OrderEntity> {
     SubmitOrderResponseVo submitOrder(OrderSubmitVo submitVo);
 
     OrderEntity getOrderByOrderSn(String orderSn);
+
+    /**
+     * 关闭过期的的订单
+     */
+    void closeOrder(OrderEntity orderEntity);
 }
 

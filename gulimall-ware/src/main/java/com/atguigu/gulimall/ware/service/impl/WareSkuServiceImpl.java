@@ -217,6 +217,20 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
         }
     }
 
+    // 防止订单服务卡顿，导致订单状态消息一直改不了，库存消息优先到期。查订单状态新建状态，什么都不做就走了。
+    // 导致卡顿的订单，永远不能解锁库存
+    @Override
+    public void unlock(OrderTo orderTo) {
+        //为防止重复解锁，需要重新查询工作单
+        String orderSn = orderTo.getOrderSn();
+        WareOrderTaskEntity taskEntity = this.orderTaskService.getBaseMapper().selectOne((new QueryWrapper<WareOrderTaskEntity>().eq("order_sn", orderSn)));
+        //查询出当前订单相关的且处于锁定状态的工作单详情
+        List<WareOrderTaskDetailEntity> lockDetails = this.orderTaskDetailService.list(new QueryWrapper<WareOrderTaskDetailEntity>().eq("task_id", taskEntity.getId()).eq("lock_status", WareTaskStatusEnum.Locked.getCode()));
+        for (WareOrderTaskDetailEntity lockDetail : lockDetails) {
+            this.unlockStock(lockDetail.getSkuId(),lockDetail.getSkuNum(),lockDetail.getWareId(),lockDetail.getId());
+        }
+    }
+
     /**
      * 解锁库存
      * @param skuId

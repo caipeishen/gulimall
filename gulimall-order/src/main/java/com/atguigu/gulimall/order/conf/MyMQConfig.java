@@ -17,26 +17,11 @@ import java.util.Map;
  */
 @Configuration
 public class MyMQConfig {
-    
-    public static final String eventExchange = "order-event-exchange";
-    
-    
-    public static final String createOrderRoutingKey = "order.create.order";
-    
-    public static final String delayQueue = "order.delay.queue";
-    
-    
-    public static final String releaseRoutingKey = "order.release.order";
-    
-    public static final String releaseQueue = "order.release.order.queue";
-    
-    
-    public static final Integer ttl = 30000;
-    
+
     
     @Bean
     public Exchange orderEventExchange(){
-        return new TopicExchange(eventExchange, true, false);
+        return new TopicExchange("order-event-exchange", true, false);
     }
     
     
@@ -47,10 +32,10 @@ public class MyMQConfig {
     @Bean
     public Queue orderDelayQueue(){
         Map<String ,Object> arguments = new HashMap<>();
-        arguments.put("x-dead-letter-exchange", eventExchange);
-        arguments.put("x-dead-letter-routing-key", releaseRoutingKey);
-        arguments.put("x-message-ttl", ttl); // 30秒 过期时间 毫秒单位 一定要是整数类型
-        return new Queue(delayQueue, true, false, false, arguments);
+        arguments.put("x-dead-letter-exchange", "order-event-exchange");
+        arguments.put("x-dead-letter-routing-key", "order.release.order");
+        arguments.put("x-message-ttl", 30000); // 30秒 过期时间 毫秒单位 一定要是整数类型
+        return new Queue("order.delay.queue", true, false, false, arguments);
     }
     
     /**
@@ -58,8 +43,8 @@ public class MyMQConfig {
      * @return
      */
     @Bean
-    public Queue orderReleaseOrderQueue(){
-        return new Queue(releaseQueue, true, false, false);
+    public Queue orderReleaseQueue(){
+        return new Queue("order.release.order.queue", true, false, false);
     }
     
     
@@ -68,8 +53,8 @@ public class MyMQConfig {
      * @return
      */
     @Bean
-    public Binding orderCreateOrderBinding(){
-        return new Binding(delayQueue, Binding.DestinationType.QUEUE, eventExchange, createOrderRoutingKey, null);
+    public Binding orderCreateBinding(){
+        return new Binding("order.delay.queue", Binding.DestinationType.QUEUE, "order-event-exchange", "order.create.order", null);
     }
     
     /**
@@ -77,8 +62,17 @@ public class MyMQConfig {
      * @return
      */
     @Bean
-    public Binding orderReleaseOrderBinding(){
-        return new Binding(releaseQueue, Binding.DestinationType.QUEUE, eventExchange, releaseRoutingKey, null);
+    public Binding orderReleaseBinding(){
+        return new Binding("order.release.order.queue", Binding.DestinationType.QUEUE, "order-event-exchange", "order.release.order", null);
     }
-    
+
+    /**
+     * 订单交换机和释放库存队列绑定
+     * @return
+     */
+    @Bean
+    public Binding orderReleaseStockBinding() {
+        return new Binding("stock.release.stock.queue", Binding.DestinationType.QUEUE, "order-event-exchange", "order.release.other.#", null);
+    }
+
 }

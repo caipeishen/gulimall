@@ -3,6 +3,7 @@ package com.atguigu.gulimall.order.service.impl;
 import com.alibaba.fastjson.TypeReference;
 import com.atguigu.common.enume.OrderStatusEnum;
 import com.atguigu.common.exception.NoStockException;
+import com.atguigu.common.to.mq.OrderTo;
 import com.atguigu.common.utils.R;
 import com.atguigu.common.vo.MemberRsepVo;
 import com.atguigu.gulimall.order.constant.OrderConstant;
@@ -17,6 +18,7 @@ import com.atguigu.gulimall.order.to.OrderCreateTo;
 import com.atguigu.gulimall.order.vo.*;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -186,7 +188,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 if(r.getCode() == 0){
                     // 库存足够 锁定成功
                     submitVo.setOrderEntity(order.getOrder());
-					int i = 10/0;
+//					int i = 10/0;
+
+                    //发送消息到订单延迟队列，判断过期订单
+                    this.rabbitTemplate.convertAndSend("order-event-exchange","order.create.order",order.getOrder());
+
                 } else {
                     // 锁定失败
                     String msg = (String) r.get("msg");
@@ -204,6 +210,27 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     public OrderEntity getOrderByOrderSn(String orderSn) {
         OrderEntity order_sn = this.getOne(new QueryWrapper<OrderEntity>().eq("order_sn", orderSn));
         return order_sn;
+    }
+
+    /**
+     * 关闭过期的的订单
+     */
+    @Override
+    public void  closeOrder(OrderEntity orderEntity) {
+        //因为消息发送过来的订单已经是很久前的了，中间可能被改动，因此要查询最新的订单
+        OrderEntity newOrderEntity = this.getById(orderEntity.getId());
+        //如果订单还处于新创建的状态，说明超时未支付，进行关单
+        if (newOrderEntity.getStatus() == OrderStatusEnum.CREATE_NEW.getCode()) {
+            OrderEntity updateOrder = new OrderEntity();
+            updateOrder.setId(newOrderEntity.getId());
+            updateOrder.setStatus(OrderStatusEnum.CANCLED.getCode());
+            this.updateById(updateOrder);
+
+            //关单后发送消息通知其他服务进行关单相关的操作，如解锁库存
+            OrderTo orderTo = new OrderTo();
+            BeanUtils.copyProperties(newOrderEntity,orderTo);
+            this.rabbitTemplate.convertAndSend("order-event-exchange", "order.release.other",orderTo);
+        }
     }
 
 
