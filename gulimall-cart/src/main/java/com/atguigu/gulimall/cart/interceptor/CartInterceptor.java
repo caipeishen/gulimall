@@ -22,7 +22,7 @@ import java.util.UUID;
  **/
 public class CartInterceptor implements HandlerInterceptor {
 
-    public static ThreadLocal<UserInfoTo> threadLocal = new ThreadLocal<>();
+    public static ThreadLocal<UserInfoTo> loginUser = new ThreadLocal<>();
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -49,7 +49,7 @@ public class CartInterceptor implements HandlerInterceptor {
             String uuid = UUID.randomUUID().toString().replace("-","");
             userInfoTo.setUserKey("FIRE-" + uuid);
         }
-        threadLocal.set(userInfoTo);
+        loginUser.set(userInfoTo);
         return true;
     }
 
@@ -59,7 +59,7 @@ public class CartInterceptor implements HandlerInterceptor {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
 
-        UserInfoTo userInfoTo = threadLocal.get();
+        UserInfoTo userInfoTo = loginUser.get();
         if(!userInfoTo.isTempUser()){
             Cookie cookie = new Cookie(CartConstant.TEMP_USER_COOKIE_NAME, userInfoTo.getUserKey());
             // 设置这个cookie作用域 过期时间

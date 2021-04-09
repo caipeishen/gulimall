@@ -2,6 +2,7 @@ package com.atguigu.gulimall.order.service;
 
 import com.atguigu.gulimall.order.vo.OrderConfirmVo;
 import com.atguigu.gulimall.order.vo.OrderSubmitVo;
+import com.atguigu.gulimall.order.vo.PayVo;
 import com.atguigu.gulimall.order.vo.SubmitOrderResponseVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.atguigu.common.utils.PageUtils;
@@ -30,5 +31,19 @@ public interface OrderService extends IService<OrderEntity> {
      * 下单操作
      */
     SubmitOrderResponseVo submitOrder(OrderSubmitVo submitVo);
+    
+    /**
+     * 获取下单信息
+     * @param orderSn
+     * @return
+     */
+    PayVo getOrderPay(String orderSn);
+    
+    /**
+     * 分页查询会员订单
+     * @param params
+     * @return
+     */
+    PageUtils getMemberOrderPage(Map<String, Object> params);
 }
 

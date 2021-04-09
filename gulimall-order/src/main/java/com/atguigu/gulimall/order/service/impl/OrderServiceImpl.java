@@ -11,7 +11,7 @@ import com.atguigu.gulimall.order.feign.CartFeignService;
 import com.atguigu.gulimall.order.feign.MemberFeignService;
 import com.atguigu.gulimall.order.feign.ProductFeignService;
 import com.atguigu.gulimall.order.feign.WmsFeignService;
-import com.atguigu.gulimall.order.interceptor.LoginUserInterceptor;
+import com.atguigu.gulimall.order.interceptor.LoginInterceptor;
 import com.atguigu.gulimall.order.service.OrderItemService;
 import com.atguigu.gulimall.order.to.OrderCreateTo;
 import com.atguigu.gulimall.order.vo.*;
@@ -87,7 +87,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     @Override
     public OrderConfirmVo confirmOrder() throws ExecutionException, InterruptedException {
         
-        MemberRsepVo memberRsepVo = LoginUserInterceptor.threadLocal.get();
+        MemberRsepVo memberRsepVo = LoginInterceptor.loginUser.get();
         OrderConfirmVo confirmVo = new OrderConfirmVo();
 
         // 这一步至关重要 冲主线程获取用户数据 异步线程来共享
@@ -147,7 +147,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         // 0：正常
         submitVo.setCode(0);
         // 去服务器创建订单,验令牌,验价格,所库存
-        MemberRsepVo memberRsepVo = LoginUserInterceptor.threadLocal.get();
+        MemberRsepVo memberRsepVo = LoginInterceptor.loginUser.get();
         // 1. 验证令牌 [必须保证原子性] 返回 0(令牌删除失败)or 1(删除成功)
         String script = "if redis.call('get',KEYS[1]) == ARGV[1] then return redis.call('del',KEYS[1]) else return 0 end";
         String orderToken = vo.getOrderToken();
@@ -199,8 +199,39 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         }
         return submitVo;
     }
-
-
+    
+    @Override
+    public PayVo getOrderPay(String orderSn) {
+        OrderEntity orderEntity = this.getOne(new QueryWrapper<OrderEntity>().eq("order_sn", orderSn));
+        PayVo payVo = new PayVo();
+        payVo.setOut_trade_no(orderSn);
+        BigDecimal payAmount = orderEntity.getPayAmount().setScale(2, BigDecimal.ROUND_UP);
+        payVo.setTotal_amount(payAmount.toString());
+    
+        List<OrderItemEntity> orderItemEntities = orderItemService.list(new QueryWrapper<OrderItemEntity>().eq("order_sn", orderSn));
+        OrderItemEntity orderItemEntity = orderItemEntities.get(0);
+        payVo.setSubject(orderItemEntity.getSkuName());
+        payVo.setBody(orderItemEntity.getSkuAttrsVals());
+        return payVo;
+    }
+    
+    @Override
+    public PageUtils getMemberOrderPage(Map<String, Object> params) {
+        MemberRsepVo loginUser = LoginInterceptor.loginUser.get();
+        QueryWrapper<OrderEntity> queryWrapper = new QueryWrapper<OrderEntity>().eq("member_id", loginUser.getId()).orderByDesc("create_time");
+        IPage<OrderEntity> page = this.page(
+                new Query<OrderEntity>().getPage(params),queryWrapper
+        );
+        List<OrderEntity> entities = page.getRecords().stream().map(order -> {
+            List<OrderItemEntity> orderItemEntities = orderItemService.list(new QueryWrapper<OrderItemEntity>().eq("order_sn", order.getOrderSn()));
+            order.setItems(orderItemEntities);
+            return order;
+        }).collect(Collectors.toList());
+        page.setRecords(entities);
+        return new PageUtils(page);
+    }
+    
+    
     /**
      * 创建订单
      */
@@ -231,7 +262,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         entity.setCommentTime(new Date());
         entity.setReceiveTime(new Date());
         entity.setDeliveryTime(new Date());
-        MemberRsepVo rsepVo = LoginUserInterceptor.threadLocal.get();
+        MemberRsepVo rsepVo = LoginInterceptor.loginUser.get();
         entity.setMemberId(rsepVo.getId());
         entity.setMemberUsername(rsepVo.getUsername());
         entity.setBillReceiverEmail(rsepVo.getEmail());

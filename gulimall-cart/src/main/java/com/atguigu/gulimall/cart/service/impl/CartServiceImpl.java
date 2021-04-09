@@ -46,7 +46,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Cart getCart() throws ExecutionException, InterruptedException {
-        UserInfoTo userInfoTo = CartInterceptor.threadLocal.get();
+        UserInfoTo userInfoTo = CartInterceptor.loginUser.get();
         Cart cart = new Cart();
         // 临时购物车的key
         String tempCartKey = CART_PREFIX + userInfoTo.getUserKey();
@@ -147,7 +147,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<CartItem> getUserCartItems() {
-        UserInfoTo userInfoTo = CartInterceptor.threadLocal.get();
+        UserInfoTo userInfoTo = CartInterceptor.loginUser.get();
         if(userInfoTo.getUserId() == null){
             return null;
         }else{
@@ -171,7 +171,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public BigDecimal toTrade() throws ExecutionException, InterruptedException {
         BigDecimal amount = this.getCart().getTotalAmount();
-        UserInfoTo userInfoTo = CartInterceptor.threadLocal.get();
+        UserInfoTo userInfoTo = CartInterceptor.loginUser.get();
         stringRedisTemplate.delete(CART_PREFIX + (userInfoTo.getUserId() != null ? userInfoTo.getUserId().toString() : userInfoTo.getUserKey()));
         return amount;
     }
@@ -180,7 +180,7 @@ public class CartServiceImpl implements CartService {
      * 获取到我们要操作的购物车 [已经包含用户前缀 只需要带上用户id 或者临时id 就能对购物车进行操作]
      */
     private BoundHashOperations<String, Object, Object> getCartOps() {
-        UserInfoTo userInfoTo = CartInterceptor.threadLocal.get();
+        UserInfoTo userInfoTo = CartInterceptor.loginUser.get();
         // 1. 这里我们需要知道操作的是离线购物车还是在线购物车
         String cartKey = CART_PREFIX;
         if(userInfoTo.getUserId() != null){
