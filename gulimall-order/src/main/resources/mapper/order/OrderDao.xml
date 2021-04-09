@@ -49,5 +49,10 @@
         <result property="modifyTime" column="modify_time"/>
     </resultMap>
 
+    <!--  更新订单状态  -->
+    <update id="updateOrderStatus">
+        update oms_order set status=#{code}, pay_type=#{payType} where order_sn=#{orderSn}
+    </update>
+
 
 </mapper>

@@ -7,13 +7,16 @@ import com.atguigu.common.to.mq.OrderTo;
 import com.atguigu.common.utils.R;
 import com.atguigu.common.vo.MemberRsepVo;
 import com.atguigu.gulimall.order.constant.OrderConstant;
+import com.atguigu.gulimall.order.constant.PayConstant;
 import com.atguigu.gulimall.order.entity.OrderItemEntity;
+import com.atguigu.gulimall.order.entity.PaymentInfoEntity;
 import com.atguigu.gulimall.order.feign.CartFeignService;
 import com.atguigu.gulimall.order.feign.MemberFeignService;
 import com.atguigu.gulimall.order.feign.ProductFeignService;
 import com.atguigu.gulimall.order.feign.WmsFeignService;
 import com.atguigu.gulimall.order.interceptor.LoginInterceptor;
 import com.atguigu.gulimall.order.service.OrderItemService;
+import com.atguigu.gulimall.order.service.PaymentInfoService;
 import com.atguigu.gulimall.order.to.OrderCreateTo;
 import com.atguigu.gulimall.order.vo.*;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
@@ -76,6 +79,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     @Autowired
     private OrderItemService orderItemService;
 
+    @Autowired
+    private PaymentInfoService paymentInfoService;
+    
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<OrderEntity> page = this.page(
@@ -264,6 +270,26 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         }).collect(Collectors.toList());
         page.setRecords(entities);
         return new PageUtils(page);
+    }
+    
+    @Override
+    public void handlerPayResult(PayAsyncVo payAsyncVo) {
+        //保存交易流水
+        PaymentInfoEntity infoEntity = new PaymentInfoEntity();
+        String orderSn = payAsyncVo.getOut_trade_no();
+        infoEntity.setOrderSn(orderSn);
+        infoEntity.setAlipayTradeNo(payAsyncVo.getTrade_no());
+        infoEntity.setSubject(payAsyncVo.getSubject());
+        String trade_status = payAsyncVo.getTrade_status();
+        infoEntity.setPaymentStatus(trade_status);
+        infoEntity.setCreateTime(new Date());
+        infoEntity.setCallbackTime(payAsyncVo.getNotify_time());
+        this.paymentInfoService.save(infoEntity);
+    
+        //判断交易状态是否成功
+        if (trade_status.equals("TRADE_SUCCESS") || trade_status.equals("TRADE_FINISHED")) {
+            this.baseMapper.updateOrderStatus(orderSn, OrderStatusEnum.PAYED.getCode(), PayConstant.ALIPAY);
+        }
     }
     
     
