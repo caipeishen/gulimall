@@ -32,4 +32,12 @@
         UPDATE `wms_ware_sku` SET stock_locked = stock_locked + #{num}
         WHERE sku_id = #{skuId} AND ware_id = #{wareId} AND stock-stock_locked >= #{num}
     </update>
+
+    <!-- 解锁库存 -->
+    <update id="unlockStock">
+        UPDATE wms_ware_sku
+        SET stock_locked = stock_locked-#{skuNum}
+        WHERE sku_id = #{skuId}
+        AND ware_id = #{wareId}
+    </update>
 </mapper>

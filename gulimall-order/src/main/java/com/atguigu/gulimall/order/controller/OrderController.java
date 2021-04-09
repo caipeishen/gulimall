@@ -86,4 +86,15 @@ public class OrderController {
         return R.ok();
     }
 
+    /**
+     * 根据订单编号获取订单信息
+     * @param orderSn
+     * @return
+     */
+    @RequestMapping("/infoByOrderSn/{orderSn}")
+    public R infoByOrderSn(@PathVariable("orderSn") String orderSn){
+        OrderEntity order = this.orderService.getOrderByOrderSn(orderSn);
+        return R.ok().put("order", order);
+    }
+
 }

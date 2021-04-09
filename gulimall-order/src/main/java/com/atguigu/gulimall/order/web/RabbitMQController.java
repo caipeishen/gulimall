@@ -1,16 +1,13 @@
 package com.atguigu.gulimall.order.web;
 
-import com.atguigu.gulimall.order.conf.MyMQConfig;
 import com.atguigu.gulimall.order.conf.MyRabbitConfig;
 import com.atguigu.gulimall.order.entity.OrderEntity;
 import com.atguigu.gulimall.order.entity.OrderItemEntity;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
@@ -60,19 +57,6 @@ public class RabbitMQController {
             }
         }
         return "ok";
-    }
-    
-    /**
-     * 测试发送创建订单
-     * @return
-     */
-    @GetMapping("/test/createOrder")
-    public String createOrderTest(){
-        OrderEntity orderEntity = new OrderEntity();
-        orderEntity.setOrderSn(UUID.randomUUID().toString().replace("-",""));
-        orderEntity.setModifyTime(new Date());
-        this.rabbitTemplate.convertAndSend(MyMQConfig.eventExchange, MyMQConfig.createOrderRoutingKey, orderEntity);
-        return "下单成功";
     }
 
 }
