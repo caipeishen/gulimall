@@ -1,0 +1,17 @@
+package com.atguigu.gulimall.seckill.feign;
+
+import com.atguigu.common.utils.R;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+
+/**
+ * @Author: Cai Peishen
+ * @Date: 2021/4/13 10:40
+ * @Description:
+ */
+@FeignClient("gulimall-coupon")
+public interface CouponFeignService {
+
+	@GetMapping("/coupon/seckillsession/lates3DaySession")
+	R getLate3DaySession();
+}

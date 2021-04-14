@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-@EnableAsync
-@EnableScheduling
+//@EnableAsync
+//@EnableScheduling
 public class HelloSchedule {
     
     /**
@@ -30,12 +30,12 @@ public class HelloSchedule {
      * 3、自动配置类 TaskExecutionAutoConfiguration 属性绑定在TaskExecutionProperties
      */
     
-    @Async
-    @Scheduled(cron = "*/5 * 18 * * ?")
-    public void hello() throws InterruptedException {
-        log.info("hello...");
-        Thread.sleep(3000);
-    }
+//    @Async
+//    @Scheduled(cron = "*/5 * 18 * * ?")
+//    public void hello() throws InterruptedException {
+//        log.info("hello...");
+//        Thread.sleep(3000);
+//    }
     
     
 }
