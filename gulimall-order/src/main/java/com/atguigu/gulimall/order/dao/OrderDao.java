@@ -15,5 +15,5 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface OrderDao extends BaseMapper<OrderEntity> {
     
-    void updateOrderStatus(@Param("orderSn") String orderSn, @Param("code") Integer code, @Param("alipay") Integer alipay);
+    void updateOrderStatus(@Param("orderSn") String orderSn, @Param("code") Integer code, @Param("payType") Integer alipay);
 }

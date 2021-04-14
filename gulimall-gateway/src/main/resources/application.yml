@@ -84,5 +84,9 @@ spring:
             predicates:
               - Host=order.gulimall.com
 
+          - id: gulimall_seckill_host
+            uri: lb://gulimall-seckill
+            predicates:
+              - Host=seckill.gulimall.com
 server:
   port: 88
