@@ -33,7 +33,7 @@ public class SeckillSkuScheduled {
 	 *  三秒执行一次：* /3 * * * * ?
 	 */
 	@Async
-	@Scheduled(cron = "0/3 * * * * ?")
+	@Scheduled(cron = "0 * * * * ?")
 	public void uploadSeckillSkuLatest3Day(){
 		log.info("上架秒杀商品的信息");
 		// 1.重复上架无需处理 加上分布式锁 状态已经更新 释放锁以后其他人才获取到最新状态

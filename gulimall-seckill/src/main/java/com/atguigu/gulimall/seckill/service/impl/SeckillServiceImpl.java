@@ -9,6 +9,7 @@ import com.atguigu.gulimall.seckill.service.SeckillService;
 import com.atguigu.gulimall.seckill.to.SeckillSkuRedisTo;
 import com.atguigu.gulimall.seckill.vo.SeckillSessionsWithSkus;
 import com.atguigu.gulimall.seckill.vo.SkuInfoVo;
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RSemaphore;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
@@ -17,10 +18,13 @@ import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service("secKillService")
 public class SeckillServiceImpl implements SeckillService {
     
@@ -39,7 +43,7 @@ public class SeckillServiceImpl implements SeckillService {
     
     private final String SESSION_CACHE_PREFIX = "seckill:sessions:";
     
-    private final String SKUKILL_CACHE_PREFIX = "seckill:skus:";
+    private final String SKUKILL_CACHE_PREFIX = "seckill:skus";
     
     private final String SKUSTOCK_SEMAPHONE = "seckill:stock:"; // +商品随机码
     
@@ -55,7 +59,36 @@ public class SeckillServiceImpl implements SeckillService {
             this.saveSessionSkuInfo(sessions);
         }
     }
-    
+
+    @Override
+    public List<SeckillSkuRedisTo> getCurrentSeckillSkus() {
+        // 1.确定当前时间属于那个秒杀场次
+        long time = new Date().getTime();
+        Set<String> keys = this.stringRedisTemplate.keys(SESSION_CACHE_PREFIX + "*");
+        for (String key : keys) {
+            // seckill:sessions:1593993600000_1593995400000
+            String replace = key.replace(SESSION_CACHE_PREFIX, "");
+            String[] split = replace.split("_");
+            long start = Long.parseLong(split[0]);
+            long end = Long.parseLong(split[1]);
+            if(time >= start && time <= end) {
+                // 2.获取这个秒杀场次的所有商品信息
+                List<String> range = this.stringRedisTemplate.opsForList().range(key, 0, 1000);
+                BoundHashOperations<String, String, String> hashOps = this.stringRedisTemplate.boundHashOps(SKUKILL_CACHE_PREFIX);
+                List<String> list = hashOps.multiGet(range);
+                if(list != null) {
+                    return list.stream().map(item -> {
+                        SeckillSkuRedisTo redisTo = JSON.parseObject(item, SeckillSkuRedisTo.class);
+//						redisTo.setRandomCode(null);
+                        return redisTo;
+                    }).collect(Collectors.toList());
+                }
+                break;
+            }
+        }
+        return null;
+    }
+
     /**
      * 缓存活动信息
      * @param sessions
