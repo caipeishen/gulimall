@@ -223,7 +223,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
      * 关闭过期的的订单
      */
     @Override
-    public void  closeOrder(OrderEntity orderEntity) {
+    public void closeOrder(OrderEntity orderEntity) {
         //因为消息发送过来的订单已经是很久前的了，中间可能被改动，因此要查询最新的订单
         OrderEntity newOrderEntity = this.getById(orderEntity.getId());
         //如果订单还处于新创建的状态，说明超时未支付，进行关单

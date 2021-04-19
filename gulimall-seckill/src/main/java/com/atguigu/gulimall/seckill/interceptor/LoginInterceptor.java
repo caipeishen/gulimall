@@ -35,7 +35,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 			}else{
 				// 没登陆就去登录
 				session.setAttribute("msg", AuthServerConstant.NOT_LOGIN);
-				response.sendRedirect("http://auth.glmall.com/login.html");
+				response.sendRedirect("http://auth.gulimall.com/login.html");
 				return false;
 			}
 		}
