@@ -2,26 +2,35 @@ package com.atguigu.gulimall.seckill.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.atguigu.common.to.mq.SeckillOrderTo;
 import com.atguigu.common.utils.R;
+import com.atguigu.common.vo.MemberRsepVo;
 import com.atguigu.gulimall.seckill.feign.CouponFeignService;
 import com.atguigu.gulimall.seckill.feign.ProductFeignService;
+import com.atguigu.gulimall.seckill.interceptor.LoginInterceptor;
 import com.atguigu.gulimall.seckill.service.SeckillService;
 import com.atguigu.gulimall.seckill.to.SeckillSkuRedisTo;
 import com.atguigu.gulimall.seckill.vo.SeckillSessionsWithSkus;
 import com.atguigu.gulimall.seckill.vo.SkuInfoVo;
+import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.redisson.api.RSemaphore;
 import org.redisson.api.RedissonClient;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -39,13 +48,17 @@ public class SeckillServiceImpl implements SeckillService {
     
     @Autowired
     private ProductFeignService productFeignService;
-    
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
     
     private final String SESSION_CACHE_PREFIX = "seckill:sessions:";
     
     private final String SKUKILL_CACHE_PREFIX = "seckill:skus";
     
     private final String SKUSTOCK_SEMAPHONE = "seckill:stock:"; // +商品随机码
+
+    private final String SKILLED_CACHE_PREFIX = "seckill:skilled:"; // 秒杀过的
     
     @Override
     public void uploadSeckillSkuLatest3Day() {
@@ -84,6 +97,81 @@ public class SeckillServiceImpl implements SeckillService {
                     }).collect(Collectors.toList());
                 }
                 break;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public SeckillSkuRedisTo getSkuSeckillInfo(Long skuId) {
+        BoundHashOperations<String, String, String> hashOps = this.stringRedisTemplate.boundHashOps(SKUKILL_CACHE_PREFIX);
+        Set<String> keys = hashOps.keys();
+        if(keys != null && keys.size() > 0){
+            String regx = "\\d-" + skuId;
+            for (String key : keys) {
+                if(Pattern.matches(regx, key)){
+                    String json = hashOps.get(key);
+                    SeckillSkuRedisTo to = JSON.parseObject(json, SeckillSkuRedisTo.class);
+                    // 处理一下随机码
+                    long current = new Date().getTime();
+
+                    if(current <= to.getStartTime() || current >= to.getEndTime()){
+                        to.setRandomCode(null);
+                    }
+                    return to;
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String kill(String killId, String key, Integer num) {
+        MemberRsepVo memberRsepVo = LoginInterceptor.loginUser.get();
+
+        // 1.获取当前秒杀商品的详细信息
+        BoundHashOperations<String, String, String> hashOps = this.stringRedisTemplate.boundHashOps(SKUKILL_CACHE_PREFIX);
+        String json = hashOps.get(killId);
+        if(StringUtils.isNotBlank(json)){
+            SeckillSkuRedisTo redisTo = JSON.parseObject(json, SeckillSkuRedisTo.class);
+            // 校验合法性
+            long time = new Date().getTime();
+            if(time >= redisTo.getStartTime() && time <= redisTo.getEndTime()) {
+                // 1.校验随机码跟商品id是否匹配
+                String randomCode = redisTo.getRandomCode();
+                String skuId = redisTo.getPromotionSessionId() + "-" + redisTo.getSkuId();
+
+                if (randomCode.equals(key) && killId.equals(skuId)) {
+                    // 2.说明数据合法
+                    BigDecimal limit = redisTo.getSeckillLimit();
+                    if (num <= limit.intValue()) {
+                        // 3.验证这个人是否已经购买过了
+                        String redisKey = memberRsepVo.getId() + "-" + skuId;
+                        // 让数据自动过期
+                        long ttl = redisTo.getEndTime() - redisTo.getStartTime();
+
+                        Boolean aBoolean = this.stringRedisTemplate.opsForValue().setIfAbsent(SKILLED_CACHE_PREFIX + redisKey, num.toString(), ttl < 0 ? 0 : ttl, TimeUnit.MILLISECONDS);
+                        if (aBoolean) {
+                            // 占位成功 说明从来没买过
+                            RSemaphore semaphore = this.redissonClient.getSemaphore(SKUSTOCK_SEMAPHONE + randomCode);
+                            boolean acquire = semaphore.tryAcquire(num);// 使用tryAcquire 不会阻塞
+                            if (acquire) {
+                                // 秒杀成功
+                                // 快速下单 发送MQ
+                                String orderSn = IdWorker.getTimeId() + UUID.randomUUID().toString().replace("-", "").substring(7, 8);
+                                SeckillOrderTo orderTo = new SeckillOrderTo();
+                                orderTo.setOrderSn(orderSn);
+                                orderTo.setMemberId(memberRsepVo.getId());
+                                orderTo.setNum(num);
+                                orderTo.setSkuId(redisTo.getSkuId());
+                                orderTo.setSeckillPrice(redisTo.getSeckillPrice());
+                                orderTo.setPromotionSessionId(redisTo.getPromotionSessionId());
+                                this.rabbitTemplate.convertAndSend("order-event-exchange", "order.seckill.order", orderTo);
+                                return orderSn;
+                            }
+                        }
+                    }
+                }
             }
         }
         return null;

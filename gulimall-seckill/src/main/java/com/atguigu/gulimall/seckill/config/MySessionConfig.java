@@ -1,4 +1,4 @@
-package com.atguigu.gulimall.product.config;
+package com.atguigu.gulimall.seckill.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +10,7 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
 
 /**
  * @Author: Cai Peishen
- * @Date: 2021/3/11 22:41
+ * @Date: 2021/4/16 16:41
  * @Description:
  **/
 @Configuration

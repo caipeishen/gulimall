@@ -91,8 +91,6 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
  *              原理:
  *                  CacheManager(RediscacheManager)->cache(RedisCache)->cache负责缓存的读写
  **/
-// 开启redis 存储session
-@EnableRedisHttpSession
 @EnableFeignClients(basePackages = "com.atguigu.gulimall.product.feign")
 @EnableDiscoveryClient
 @SpringBootApplication

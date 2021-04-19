@@ -75,4 +75,33 @@ public class MyMQConfig {
         return new Binding("stock.release.stock.queue", Binding.DestinationType.QUEUE, "order-event-exchange", "order.release.other.#", null);
     }
 
+
+
+
+
+    /**
+     * 商品秒杀队列
+     * @return
+     */
+    @Bean
+    public Queue orderSecKillOrderQueue() {
+        Queue queue = new Queue("order.seckill.order.queue", true, false, false);
+        return queue;
+    }
+
+    /**
+     * 秒杀队列和交换机绑定
+     * @return
+     */
+    @Bean
+    public Binding orderSecKillOrderQueueBinding() {
+        Binding binding = new Binding(
+                "order.seckill.order.queue",
+                Binding.DestinationType.QUEUE,
+                "order-event-exchange",
+                "order.seckill.order",
+                null);
+        return binding;
+    }
+
 }
