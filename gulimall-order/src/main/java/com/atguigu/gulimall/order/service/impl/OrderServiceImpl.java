@@ -304,6 +304,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         orderEntity.setMemberUsername(memberRsepVo == null ? null : memberRsepVo.getUsername());
         orderEntity.setStatus(OrderStatusEnum.CREATE_NEW.getCode());
         orderEntity.setCreateTime(new Date());
+        orderEntity.setTotalAmount(orderTo.getSeckillPrice().multiply(new BigDecimal(orderTo.getNum())));
         orderEntity.setPayAmount(orderTo.getSeckillPrice().multiply(new BigDecimal(orderTo.getNum())));
         this.save(orderEntity);
 
@@ -312,14 +313,22 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         if (r.getCode() == 0) {
             SeckillSkuInfoVo skuInfo = r.getData("skuInfo", new TypeReference<SeckillSkuInfoVo>() {});
             OrderItemEntity orderItemEntity = new OrderItemEntity();
+            orderItemEntity.setOrderId(orderEntity.getId());
             orderItemEntity.setOrderSn(orderTo.getOrderSn());
             orderItemEntity.setSpuId(skuInfo.getSpuId());
+            orderItemEntity.setSpuBrand(skuInfo.getBrandId().toString());
             orderItemEntity.setCategoryId(skuInfo.getCatalogId());
             orderItemEntity.setSkuId(skuInfo.getSkuId());
             orderItemEntity.setSkuName(skuInfo.getSkuName());
             orderItemEntity.setSkuPic(skuInfo.getSkuDefaultImg());
             orderItemEntity.setSkuPrice(skuInfo.getPrice());
             orderItemEntity.setSkuQuantity(orderTo.getNum());
+            orderItemEntity.setPromotionAmount(new BigDecimal("0.0"));
+            orderItemEntity.setCouponAmount(new BigDecimal("0.0"));
+            orderItemEntity.setIntegrationAmount(new BigDecimal("0.0"));
+            orderItemEntity.setRealAmount(orderTo.getSeckillPrice().multiply(new BigDecimal(orderTo.getNum())));
+            orderItemEntity.setGiftIntegration(orderTo.getSeckillPrice().multiply(new BigDecimal(orderTo.getNum())).intValue());
+            orderItemEntity.setGiftGrowth(orderTo.getSeckillPrice().multiply(new BigDecimal(orderTo.getNum())).intValue());
             this.orderItemService.save(orderItemEntity);
         }
     }
