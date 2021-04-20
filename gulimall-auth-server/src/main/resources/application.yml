@@ -10,7 +10,7 @@ spring:
         server-addr: 192.168.181.130:8848
     sentinel:
       transport:
-        dashboard: 127.0.0.1:
+        dashboard: 127.0.0.1:8333
   thymeleaf:
     cache: false
   redis:
