@@ -1,3 +1,6 @@
+server:
+  port: 12000
+
 spring:
   application:
     name: gulimall-search
@@ -5,8 +8,14 @@ spring:
     nacos:
       discovery:
         server-addr: 192.168.181.130:8848
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8333
   thymeleaf:
     cache: false
-
-server:
-  port: 12000
+# actuator暴露所有端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: *

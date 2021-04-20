@@ -1,3 +1,6 @@
+server:
+  port: 11000
+
 spring:
   application:
     name: gulimall-ware
@@ -10,6 +13,9 @@ spring:
     nacos:
       discovery:
         server-addr: 192.168.181.130:8848
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8333
   jackson:
     time-zone: GMT+8
     date-format: yyyy-MM-dd
@@ -22,17 +28,19 @@ spring:
     listener:
       simple:
         acknowledge-mode: manual  # 手动ack
-
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
   global-config:
     db-config:
       id-type: auto # 主键自增
 
-server:
-  port: 11000
-
 logging:
   level:
     com.atguigu.gulimall: debug
 
+# actuator暴露所有端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: *

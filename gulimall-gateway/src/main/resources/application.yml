@@ -1,3 +1,6 @@
+server:
+  port: 88
+
 spring:
   application:
     name: gulimall-gateway
@@ -88,5 +91,13 @@ spring:
             uri: lb://gulimall-seckill
             predicates:
               - Host=seckill.gulimall.com
-server:
-  port: 88
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8333
+
+# actuator暴露所有端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: *

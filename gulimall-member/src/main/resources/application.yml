@@ -1,3 +1,6 @@
+server:
+  port: 8000
+
 spring:
   application:
     name: gulimall-member
@@ -10,6 +13,9 @@ spring:
     nacos:
       discovery:
         server-addr: 192.168.181.130:8848
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8333
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
@@ -17,9 +23,13 @@ mybatis-plus:
     db-config:
       id-type: auto # 主键自增
 
-server:
-  port: 8000
-
 logging:
   level:
     com.atguigu.gulimall: debug
+
+# actuator暴露所有端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: *

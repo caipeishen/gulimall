@@ -19,7 +19,19 @@
 #
 #server:
 #  port: 7000
+spring:
+  cloud:
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8333
 
 logging:
   level:
     com.atguigu.gulimall: debug
+
+# actuator暴露所有端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: *

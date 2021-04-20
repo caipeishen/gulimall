@@ -1,3 +1,6 @@
+server:
+  port: 9000
+
 spring:
   application:
     name: gulimall-order
@@ -11,6 +14,10 @@ spring:
     nacos:
       discovery:
         server-addr: 192.168.181.130:8848
+    # sentinel限流熔断降级
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8333
   # rabbitMQ
   rabbitmq:
     host: 192.168.181.130
@@ -44,9 +51,6 @@ mybatis-plus:
     db-config:
       id-type: auto # 主键自增
 
-server:
-  port: 9000
-
 logging:
   level:
     com.atguigu.gulimall: debug
@@ -57,3 +61,10 @@ gulimall:
     core-size: 20
     max-size: 200
     keep-alive-time: 10
+
+# actuator暴露所有端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: *

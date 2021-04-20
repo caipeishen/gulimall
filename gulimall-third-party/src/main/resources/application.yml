@@ -1,3 +1,6 @@
+server:
+  port: 30000
+
 spring:
   application:
     name: gulimall-third-party
@@ -17,6 +20,13 @@ spring:
         smsSignId: 2e65b1bb3d054466b82f0c9d125465e2
         templateId: 908e94ccf08b4476ba6c876d13f084ad
         appCode: e8fe660ecc7a4982a9ab6be0be4b6127
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8333
 
-server:
-  port: 30000
+# actuator暴露所有端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: *

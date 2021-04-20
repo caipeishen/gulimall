@@ -1,3 +1,6 @@
+server:
+  port: 15000
+
 spring:
   application:
     name: gulimall-seckill
@@ -5,6 +8,11 @@ spring:
     nacos:
       discovery:
         server-addr: 192.168.181.130:8848
+    # sentinel限流、熔断和降级
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8333
+        port: 8719 #服务和控制台传输数据用的端口
   thymeleaf:
     cache: false
   redis:
@@ -17,5 +25,9 @@ spring:
     port: 5672
     virtual-host: /
 
-server:
-  port: 15000
+# actuator暴露所有端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: *
