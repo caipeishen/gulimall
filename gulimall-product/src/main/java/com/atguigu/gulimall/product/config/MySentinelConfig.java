@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 public class MySentinelConfig {
     
     public MySentinelConfig(){
+        // setUrlBlockHandler 只处理url限流
         WebCallbackManager.setUrlBlockHandler((request, response, exception) -> {
             R error = R.error(BizCodeEnum.TO_MANY_REQUEST.getCode(), BizCodeEnum.TO_MANY_REQUEST.getMsg());
             response.setCharacterEncoding("UTF-8");
