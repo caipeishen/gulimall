@@ -13,9 +13,15 @@ spring:
         dashboard: 127.0.0.1:8333
   thymeleaf:
     cache: false
+
 # actuator暴露所有端点
 management:
   endpoints:
     web:
       exposure:
         include: '*'
+
+# sentinel对feign值支持
+feign:
+  sentinel:
+    enabled: true
