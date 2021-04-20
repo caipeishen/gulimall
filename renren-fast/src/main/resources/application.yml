@@ -80,3 +80,10 @@ renren:
     # token有效时长，7天，单位秒
     expire: 604800
     header: token
+
+# actuator暴露所有端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
