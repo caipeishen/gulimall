@@ -1,7 +1,11 @@
 package com.atguigu.gulimall.order.conf;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -9,6 +13,7 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import javax.annotation.PostConstruct;
 
@@ -26,8 +31,41 @@ public class MyRabbitConfig {
     public static final String queue = "hello-java-queue";
     public static final String routingKey = "hello.java";
     
-    @Autowired
+//    @Autowired
     private RabbitTemplate rabbitTemplate;
+    
+    @Primary
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory){
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        this.rabbitTemplate = rabbitTemplate;
+        rabbitTemplate.setMessageConverter(messageConverter());
+        initRabbitTemplate();
+        return rabbitTemplate;
+    }
+    
+    @Bean
+    public DirectExchange helloJavaExchange() {
+        // String name, boolean durable, boolean autoDelete, Map<String, Object> arguments
+        return new DirectExchange(MyRabbitConfig.exchange, true, false);
+    }
+    
+    @Bean
+    public Queue helloJavaQueue() {
+        // String name, boolean durable, boolean autoDelete, Map<String, Object> arguments
+        return new Queue(MyRabbitConfig.queue, true, false, false);
+    }
+    
+    @Bean
+    public Binding helloJavaBinding() {
+        // String name, boolean durable, boolean autoDelete, Map<String, Object> arguments
+        return new Binding(MyRabbitConfig.queue,
+                Binding.DestinationType.QUEUE,
+                MyRabbitConfig.exchange,
+                MyRabbitConfig.routingKey,
+                null);
+    }
+    
     
     /**
      * 序列化配置
@@ -55,7 +93,7 @@ public class MyRabbitConfig {
      *			签收: channel.basicAck(deliveryTag, false);
      *			拒签: channel.basicNack(deliveryTag, false,true);
      */
-    @PostConstruct // MyRabbitConfig对象创建完成以后，执行这个方法
+//    @PostConstruct // MyRabbitConfig对象创建完成以后，执行这个方法
     public void initRabbitTemplate() {
         // 设置消息抵达exchange回调
         this.rabbitTemplate.setConfirmCallback(new RabbitTemplate.ConfirmCallback() {
