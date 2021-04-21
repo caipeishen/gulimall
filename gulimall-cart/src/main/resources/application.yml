@@ -11,6 +11,19 @@ spring:
     sentinel:
       transport:
         dashboard: 127.0.0.1:8333
+
+  # 链路追踪 采样取值介于 0到1之间，1则表示全部收集
+  sleuth:
+    sampler:
+      probability: 1
+
+  # 链路追踪可视化
+  zipkin:
+    base-url: http://127.0.0.1:9411
+    sender:
+      type: web
+    discovery-client-enabled: false
+
   redis:
     host: 192.168.181.130
 

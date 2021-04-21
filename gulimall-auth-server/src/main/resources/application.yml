@@ -24,6 +24,17 @@ spring:
     session:
       timeout: 30m
 
+  # 链路追踪 采样取值介于 0到1之间，1则表示全部收集
+  sleuth:
+    sampler:
+      probability: 1
+
+  # 链路追踪可视化
+  zipkin:
+    base-url: http://127.0.0.1:9411
+    sender:
+      type: web
+    discovery-client-enabled: false
 
 # actuator暴露所有端点
 management:
