@@ -37,3 +37,7 @@ management:
 feign:
   sentinel:
     enabled: true
+
+logging:
+  level:
+    com.atguigu.gulimall: debug
