@@ -11,7 +11,7 @@
  Target Server Version : 50733
  File Encoding         : 65001
 
- Date: 14/04/2021 19:57:50
+ Date: 21/04/2021 21:13:51
 */
 
 SET NAMES utf8mb4;
@@ -197,7 +197,14 @@ CREATE TABLE `sms_seckill_session`  (
   `status` tinyint(1) NULL DEFAULT NULL COMMENT '启用状态',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '秒杀活动场次' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '秒杀活动场次' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sms_seckill_session
+-- ----------------------------
+INSERT INTO `sms_seckill_session` VALUES (1, '0点专场', '2021-04-19 00:00:00', '2021-04-19 01:59:59', 1, '2021-04-15 00:00:00');
+INSERT INTO `sms_seckill_session` VALUES (2, '上午场', '2021-04-19 08:00:00', '2021-04-19 11:59:59', 1, '2021-04-15 00:00:00');
+INSERT INTO `sms_seckill_session` VALUES (3, '下午场', '2021-04-19 12:00:00', '2021-04-19 17:59:59', 1, '2021-04-15 00:00:00');
 
 -- ----------------------------
 -- Table structure for sms_seckill_sku_notice
@@ -228,7 +235,20 @@ CREATE TABLE `sms_seckill_sku_relation`  (
   `seckill_limit` decimal(10, 0) NULL DEFAULT NULL COMMENT '每人限购数量',
   `seckill_sort` int(11) NULL DEFAULT NULL COMMENT '排序',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '秒杀活动商品关联' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '秒杀活动商品关联' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sms_seckill_sku_relation
+-- ----------------------------
+INSERT INTO `sms_seckill_sku_relation` VALUES (1, NULL, 1, 2, 3000, 100, 1, 1);
+INSERT INTO `sms_seckill_sku_relation` VALUES (2, NULL, 2, 2, 3100, 200, 2, 2);
+INSERT INTO `sms_seckill_sku_relation` VALUES (3, NULL, 2, 3, 4000, 300, 1, 3);
+INSERT INTO `sms_seckill_sku_relation` VALUES (4, NULL, 3, 4, 5000, 400, 3, 4);
+INSERT INTO `sms_seckill_sku_relation` VALUES (5, NULL, 3, 5, 4500, 350, 1, 5);
+INSERT INTO `sms_seckill_sku_relation` VALUES (6, NULL, 3, 6, 3000, 200, 1, 6);
+INSERT INTO `sms_seckill_sku_relation` VALUES (7, NULL, 3, 7, 3000, 100, 1, 7);
+INSERT INTO `sms_seckill_sku_relation` VALUES (8, NULL, 3, 8, 2000, 10, 1, 8);
+INSERT INTO `sms_seckill_sku_relation` VALUES (9, NULL, 3, 9, 2000, 10, 1, 8);
 
 -- ----------------------------
 -- Table structure for sms_sku_full_reduction
