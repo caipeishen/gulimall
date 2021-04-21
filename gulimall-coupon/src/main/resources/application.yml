@@ -31,7 +31,7 @@ spring:
       probability: 1
   # 链路追踪可视化
   zipkin:
-    base-url: http://127.0.0.1:9411
+    base-url: http://192.168.181.130:9411
     sender:
       type: web
     discovery-client-enabled: false
