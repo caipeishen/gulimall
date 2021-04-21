@@ -94,6 +94,11 @@ spring:
     sentinel:
       transport:
         dashboard: 127.0.0.1:8333
+      # 网关被限流以后处理
+      scg:
+        fallback:
+          content-type: application/json
+          response-status: 400
 
 # actuator暴露所有端点
 management:
